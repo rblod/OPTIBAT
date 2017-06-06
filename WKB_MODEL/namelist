@@ -1,0 +1,37 @@
+!-----------------------------------------------------------------------
+&namwkb       !   parameters of the run
+!-----------------------------------------------------------------------
+!
+ln_rst=.TRUE.
+jpi=61
+jpj=5
+rdx=20.
+rdt=0.041666666666
+nitermax = 50000
+eps = 1.e-10
+nitend=1
+nitend=1000
+nstock=1000
+!
+cn_dirin='./'
+cn_dirout='./'
+cn_filein='shoreface_out.nc'
+cn_fileout='shoreface_out.nc'
+!
+ln_perio=.TRUE.
+ln_anabry=.TRUE.
+ln_brywest=.TRUE.
+ln_bryeast=.FALSE.
+ln_brysouth=.FALSE.
+ln_brynorth=.FALSE.
+!
+wkb_amp=0.7
+wkb_prd=8.3
+wkb_dir=-10.0
+!
+wkb_roller=0.5
+wkb_rsb=0.1
+wkb_gam=0.3
+wkb_btg=0.7
+wkb_tide=0.
+/ 

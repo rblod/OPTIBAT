@@ -1,0 +1,13 @@
+#undef TEST_2D
+#undef LINUX
+#undef DEBUG
+#undef TEST_1D
+#define ICE
+#undef ANOMALY
+#define EXPCOV
+#undef CHECK_SOLUTION
+#undef X4SVD
+#undef ANA_EXP
+#undef DP2PHI
+#undef ASYNCHR
+#undef SMOOTH

@@ -1,0 +1,20 @@
+obj/par_wkb.o: obj/wkbcst.o
+
+obj/rw_wkb.o: obj/par_wkb.o obj/wkbcdf.o obj/wkbmod.o
+
+obj/wkb.o: obj/par_wkb.o obj/rw_wkb.o obj/wkbcdf.o obj/wkbini.o obj/wkbmod.o
+obj/wkb.o: obj/wkbstp.o obj/wkbutil.o
+
+
+obj/wkbcdf.o: obj/wkbcst.o
+
+
+obj/wkbini.o: obj/par_wkb.o obj/rw_wkb.o obj/wkbcdf.o obj/wkbmod.o
+obj/wkbini.o: obj/wkbutil.o
+
+obj/wkbmod.o: obj/par_wkb.o obj/wkbutil.o
+
+obj/wkbstp.o: obj/par_wkb.o obj/wkbbry.o obj/wkbmod.o
+
+obj/wkbutil.o: obj/par_wkb.o
+

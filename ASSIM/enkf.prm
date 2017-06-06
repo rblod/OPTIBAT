@@ -1,0 +1,20 @@
+&method
+	methodtag = "DEnKF"
+/
+&ensemble
+	enssize = 100
+/
+&localisation
+	locfuntag = "Gaspari-Cohn"
+	locrad = 40.0
+/
+&moderation
+	infl = 1.0
+	rfactor1 = 1.0
+	rfactor2 = 2.0
+	kfactor = 1.0
+/
+&files
+/
+&prmest
+/
