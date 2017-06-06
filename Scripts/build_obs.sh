@@ -13,7 +13,7 @@ fi
 
 WORKDIR='/home/esimon/Rachid/OBS/'
 OBSDIR='DATA/'
-OBSTYPES="EPB"
+OBSTYPES="OCG EPB"
 
 cd ${WORKDIR}
 
