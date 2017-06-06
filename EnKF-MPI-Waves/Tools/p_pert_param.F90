@@ -91,7 +91,7 @@ use m_param_ensemble
       call nfw_get_vara_double(trim(oldfile), ncid, h_ID, ns, nc, fld)
       
       if(trim(distrib)=='logn')then
-        fld(:,:)=fld(:,:)*work(:,:,k)
+        fld(:,:)=max(0.2,fld(:,:)*work(:,:,k))
 	!print*, work(:,:,k)
       elseif(trim(distrib)=='norm')then
         fld(:,:)=fld(:,:)+work(:,:,k)	
