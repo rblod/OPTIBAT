@@ -14,7 +14,7 @@ program conservation
    use nfw_mod
    implicit none
 
-   integer*4, external :: iargc
+!   integer*4, external :: iargc
 
    integer imem                  ! ensemble member
    character(len=80) :: memfile,memfilenc,memfile2
@@ -24,10 +24,10 @@ program conservation
    integer          :: idm,jdm,kdm,nrens,ana
    real,dimension(:,:),allocatable::depths,modlon,modlat
    real,dimension(:,:,:),allocatable::ma,mf,dpa,dpf,diff,mtf,mta,difft,fldt
-   real,dimension(:,:,:,:),allocatable:: dp,saln,temp
+   real,dimension(:,:,:,:),allocatable:: dp1,saln,temp
    !real, allocatable, dimension(:,:,:) ::  nit,pho,sil,det,oxy,sis,fld_dp,fla,dia,chl,detp,mes,mic
    integer :: i,k,fnd,j,fnd2,kens
-   integer :: dimx,var_id,var1d(1),ncid,ierr,dimnx,dimny,dimnz,cpt
+   integer :: dimx,var_id,var1d(1),ncid,ierrc,dimnx,dimny,dimnz,cpt
    real::rdummy   
    real::onem
    parameter(onem=98060.)
@@ -93,7 +93,7 @@ program conservation
       call nfw_inq_dimlen(trim(memfile)//'.nc', ncid, z_ID, kdm)
   
       allocate(saln(idm,jdm,2*kdm,1 ))
-      allocate(dp (idm,jdm,2*kdm,1))
+      allocate(dp1 (idm,jdm,2*kdm,1))
       allocate(temp(idm,jdm,2*kdm,1 ))
    
       !Reading dp 
@@ -109,7 +109,7 @@ program conservation
       nc(3)=2*kdm
       nc(4)=1
       call nfw_inq_varid(trim(memfile)//'.nc', ncid,'dp',vDP_ID)
-      call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vDP_ID, ns, nc, dp)
+      call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vDP_ID, ns, nc, dp1)
       call nfw_inq_varid(trim(memfile)//'.nc', ncid,'temp',vPBOT_ID)
       call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vPBOT_ID, ns, nc, temp)
       call nfw_inq_varid(trim(memfile)//'.nc', ncid,'saln',vPBOT_ID)
@@ -140,13 +140,13 @@ program conservation
 	  !sig2=c1+c3*saln(i,j,k,1)+temp(i,j,k,1)&
 	  !       *(c2+c5*saln(i,j,k,1)+temp(i,j,k,1)*(c4+c7*saln(i,j,k,1)+c6*temp(i,j,k,1)))	 
 	  sig2=sig(temp(i,j,k+kdm,1),saln(i,j,k+kdm,1))   
-	  mf(i,j,kens)=mf(i,j,kens)+dp(i,j,k+kdm,1)/(sig2*onem)
-	  dpf(i,j,kens)=dpf(i,j,kens)+dp(i,j,k+kdm,1)/onem
+	  mf(i,j,kens)=mf(i,j,kens)+dp1(i,j,k+kdm,1)/(sig2*onem)
+	  dpf(i,j,kens)=dpf(i,j,kens)+dp1(i,j,k+kdm,1)/onem
 	    
-	  mtf(i,j,kens)=mtf(i,j,kens)+fldt(i,j,k)*dp(i,j,k+kdm,1)/onem
+	  mtf(i,j,kens)=mtf(i,j,kens)+fldt(i,j,k)*dp1(i,j,k+kdm,1)/onem
 	  if((i==9).and.(j==99))then
-	    print*,'forecast',k+kdm,fldt(i,j,k)*dp(i,j,k+kdm,1)/onem
-	    print*,'forecast',fldt(i,j,k),dp(i,j,k+kdm,1)/onem
+	    print*,'forecast',k+kdm,fldt(i,j,k)*dp1(i,j,k+kdm,1)/onem
+	    print*,'forecast',fldt(i,j,k),dp1(i,j,k+kdm,1)/onem
 	    print*,'forecast',mtf(i,j,kens),dpf(i,j,kens)
 	    print*,'forecast ****************'
 	  endif
@@ -175,7 +175,7 @@ program conservation
       nc(3)=2*kdm
       nc(4)=1
       call nfw_inq_varid(trim(memfile)//'.nc', ncid,'dp',vDP_ID)
-      call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vDP_ID, ns, nc, dp)
+      call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vDP_ID, ns, nc, dp1)
       call nfw_inq_varid(trim(memfile)//'.nc', ncid,'temp',vPBOT_ID)
       call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vPBOT_ID, ns, nc, temp)
       call nfw_inq_varid(trim(memfile)//'.nc', ncid,'saln',vPBOT_ID)
@@ -205,13 +205,13 @@ program conservation
 	  !sig2=c1+c3*saln(i,j,k,1)+temp(i,j,k,1)&
 	  !       *(c2+c5*saln(i,j,k,1)+temp(i,j,k,1)*(c4+c7*saln(i,j,k,1)+c6*temp(i,j,k,1)))	    
 	  sig2=sig(temp(i,j,k+kdm,1),saln(i,j,k+kdm,1)) 
-	  ma(i,j,kens)=ma(i,j,kens)+dp(i,j,k+kdm,1)/(sig2*onem)
-	  dpa(i,j,kens)=dpa(i,j,kens)+dp(i,j,k+kdm,1)/onem
+	  ma(i,j,kens)=ma(i,j,kens)+dp1(i,j,k+kdm,1)/(sig2*onem)
+	  dpa(i,j,kens)=dpa(i,j,kens)+dp1(i,j,k+kdm,1)/onem
 	    
-	  mta(i,j,kens)=mta(i,j,kens)+fldt(i,j,k)*dp(i,j,k+kdm,1)/onem
+	  mta(i,j,kens)=mta(i,j,kens)+fldt(i,j,k)*dp1(i,j,k+kdm,1)/onem
 	  if((i==9).and.(j==99))then
-	    print*,'analysis',k+kdm,fldt(i,j,k)*dp(i,j,k+kdm,1)/onem
-	    print*,'analysis',fldt(i,j,k),dp(i,j,k+kdm,1)/onem
+	    print*,'analysis',k+kdm,fldt(i,j,k)*dp1(i,j,k+kdm,1)/onem
+	    print*,'analysis',fldt(i,j,k),dp1(i,j,k+kdm,1)/onem
 	    print*,'analysis',mta(i,j,kens),dpa(i,j,kens)
 	    print*,'analysis ****************'
 	  endif

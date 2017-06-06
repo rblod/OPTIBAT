@@ -11,7 +11,7 @@ program checkice
   use m_parse_blkdat
   use m_get_mod_grid
   implicit none
-  integer*4, external :: iargc
+!  integer*4, external :: iargc
   integer iens
   real, dimension(:,:), allocatable :: modlon,modlat,depths
   logical, allocatable, dimension(:, :) :: iswater

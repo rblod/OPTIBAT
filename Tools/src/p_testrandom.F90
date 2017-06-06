@@ -4,7 +4,7 @@ program testrandom
 ! For parallelization
    use m_set_random_seed2
    implicit none
-   integer seedsze, i, maxnb
+   integer seedsze, i, ii,maxnb
    real, allocatable :: putseed(:)
    real rand, frac
    integer histo(10)
@@ -22,7 +22,7 @@ program testrandom
 !   deallocate(putseed)
 
 histo=0
-do i=1,maxnb
+do ii=1,maxnb
    call random_number(rand)
    do i=1,10 
      frac=1./float(i)

@@ -1,7 +1,6 @@
-MPI = NO
-include ../make.inc
+SHELL = /bin/bash
 
-VPATH = ../:./:TMP
+include ../make.inc
 
 PROGS = EnKF_assemble\
 checkice\
@@ -12,174 +11,118 @@ build_dp\
 pert_param\
 fixenkf
 
-all: $(PROGS)
+PROGS = EnKF_assemble\
+checkice\
+consistency\
+fixmicom\
+anamorphosis_state\
+build_dp\
+pert_param\
+fixenkf
 
-ENKF_ASSEMBLE_OBJ = qmpi.o\
-mod_raw_io.o\
-m_parse_blkdat.o\
-m_put_mod_fld.o\
-p_EnKF_assemble.o
+SFMAKEDEPEND := ../Config/sfmakedepend
+DIR_LIB=lib
+DIR_FILES=src
+DIR_PPSRC=ppsrc
+DIR_DOC=doc
+DIR_OBJS=obj
 
-CONSISTENCY_OBJ = qmpi.o\
-mod_raw_io.o\
-m_parse_blkdat.o\
-m_put_mod_fld.o\
-m_get_mod_grid.o\
-m_get_mod_fld.o\
-nfw.o\
-p_consistency.o
+FILENAMES =$(notdir $(basename $(wildcard src/*.F90))) $(notdir $(basename $(wildcard src/*.F))) $(notdir $(basename $(wildcard src/*.c)))
+FILES=src/*
+OBJS=$(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(FILENAMES)))
 
-CHECK_ICE_OBJ = qmpi.o\
-mod_raw_io.o\
-m_parse_blkdat.o\
-m_get_mod_grid.o\
-p_check_ice.o
+all: depend prepprep $(DIR_LIB)/libtools.a $(PROGS)
+		@echo
+		@echo ===================================================
+		@echo   Tools is ok
+		@echo ===================================================
+		@echo
 
+prepprep:
+		@echo
+		@echo ===================================================
+		@echo   Create working directories for Tools ...
+		@echo ===================================================
+		mkdir -p $(DIR_PPSRC)
+		mkdir -p $(DIR_OBJS)
+		mkdir -p $(DIR_LIB)
+		@echo
 
-FIXMICOM_OBJ = qmpi.o\
-nfw.o\
-p_fixmicom.o
+$(DIR_LIB)/libtools.a: $(OBJS)
+		@echo
+		@echo ===================================================
+		@echo   Compile Tools library...
+		@echo ===================================================
+		$(AR) -r $@ $(OBJS)
+		ranlib $@
+		@echo
 
-
-
-TESTX4_SRC_F90 = qmpi.F90\
-m_parse_blkdat.F90\
-m_get_mod_nrens.F90\
-testX4.F90
-
-
-TESTX4_OBJ = $(TESTX4_SRC_F90:.F90=.o)
-
-
-ANAMORPHOSIS_STATE_SRC_F90=qmpi.F90\
-mod_raw_io.F90\
-m_parse_blkdat.F90\
-m_get_micom_nrens.F90\
-m_get_micom_grid.F90\
-m_get_micom_dim.F90\
-m_get_micom_fld.F90\
-mod_measurement.F90\
-m_sort2.F90\
-m_random.F90\
-m_ana_exp_enkf.F90\
-nfw.F90\
-p_anamorphosis_state.F90
-
-ANAMORPHOSIS_STATE_OBJ=$(ANAMORPHOSIS_STATE_SRC_F90:.F90=.o)
-
-BUILD_DP_OBJ = qmpi.o\
-nfw.o\
-mod_raw_io.o\
-m_get_micom_fld.o\
-m_sort2.o\
-m_random.o\
-m_ana_exp_enkf.o\
-p_build_dp.o
+EnKF_assemble: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_EnKF_assemble.f90
+		$(FC) $(FFLAGS) -o EnKF_assemble  $(DIR_PPSRC)/p_EnKF_assemble.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
 
-MKENSEMBLE_F90= \
-qmpi.F90\
-nfw.F90\
-func1D.F90\
-func2D.F90\
-m_zeroin.F90\
-m_set_random_seed2.F90\
-m_pseudo2D.F90\
-m_fixsample.F90\
-m_sample2D.F90\
-m_param_ensemble.F90\
-p_pert_param.F90
+consistency: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_consistency.f90
+		$(FC) $(FFLAGS) -o consistency  $(DIR_PPSRC)/p_consistency.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-MKENSEMBLE_F77= eosdat.F \
-mod_eosfun.F
+checkice: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_check_ice.f90
+		$(FC) $(FFLAGS) -o checkice  $(DIR_PPSRC)/p_check_ice.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-MKENSEMBLE_OBJ = $(MKENSEMBLE_F77:.F=.o) $(MKENSEMBLE_F90:.F90=.o)
+fixmicom: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_fixmicom.f90
+		$(FC) $(FFLAGS) -o fixmicom  $(DIR_PPSRC)/p_fixmicom.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-# MKENSEMBLE_OBJ = qmpi.o\
-# nfw.o\
-# eosdat.o\
-# mod_eosfun.o\
-# func1D.o\
-# func2D.o\
-# m_zeroin.o\
-# m_pseudo2D.o\
-# p_mkensemble.o
+anamorphosis_state: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_anamorphosis_state.f90
+		$(FC) $(FFLAGS) -o anamorphosis_state  $(DIR_PPSRC)/p_anamorphosis_state.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
+build_dp: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_build_dp.f90
+		$(FC) $(FFLAGS) -o build_dp  $(DIR_PPSRC)/p_build_dp.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-FIXENKF_OBJ = qmpi.o\
-nfw.o\
-eosdat.o\
-mod_eosfun.o\
-m_fixhycom_eco_metno.o\
-p_fixenkf.o
+pert_param: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_pert_param.f90
+		$(FC) $(FFLAGS) -o pert_param  $(DIR_PPSRC)/p_pert_param.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
+fixenkf: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_fixenkf.f90
+		$(FC) $(FFLAGS) -o fixenkf  $(DIR_PPSRC)/p_fixenkf.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-CONSERV_OBJ = qmpi.o\
-nfw.o\
-eosdat.o\
-mod_eosfun.o\
-m_get_micom_dim.o\
-m_get_micom_grid.o\
-p_conservation.o
+conservation: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_conservation.f90
+		$(FC) $(FFLAGS) -o conservation  $(DIR_PPSRC)/p_conservation.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-m_Generate_element_Si.o: m_parse_blkdat.o mod_measurement.o m_get_mod_fld.o m_insitu.o m_obs.o
-m_insitu.o: nfw.o
-m_get_mod_nrens.o: qmpi.o
-m_obs.o : m_parameters.o m_uobs.o
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
+		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90
+		$(FC) $(FFLAGS) -c $(DIR_PPSRC)/$(*F).f90 -o $(DIR_OBJS)/$(*F).o -I../EnKF-MPI-Waves/obj
 
-$(CONSISTENCY_OBJ) $(FIXMICOM_OBJ) $(MKENSEMBLE_OBJ) : MODEL.CPP makefile
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.F Makefile MODEL.CPP
+		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F > $(DIR_PPSRC)/$(*F).f
+		$(FC) $(FFLAGS) $(F77FLG)-c $(DIR_PPSRC)/$(*F).f -o $(DIR_OBJS)/$(*F).o
 
-EnKF_assemble: $(ENKF_ASSEMBLE_OBJ)
-	@echo "->EnKF_assemble"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../EnKF_assemble $(ENKF_ASSEMBLE_OBJ) 
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.c Makefile MODEL.CPP
+	$(CC) -c $(CFLAGS) -c $(DIR_FILES)/$(*F).c -o $(DIR_OBJS)/$(*F).o -I../EnKF-MPI-Waves/src
 
-consistency: $(CONSISTENCY_OBJ)
-	@echo "->consistency"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../consistency $(CONSISTENCY_OBJ) $(LIBS)
+#--------------------------------------------------------------------------
+#  Target to create dependeanies.
+#--------------------------------------------------------------------------
 
-checkice: $(CHECK_ICE_OBJ)
-	   @echo "->checkice"
-	   @cd ./TMP ; $(LD) $(LINKFLAGS) -o ../checkice $(CHECK_ICE_OBJ) $(LIBS)
+MakeDepend: $(DIR_FILES)
+		$(SFMAKEDEPEND) --silent --fext=F90 --fext=F --fext=c --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
 
-fixmicom: $(FIXMICOM_OBJ)
-	@echo "->fixmicom"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../fixmicom $(FIXMICOM_OBJ)
+depend: $(DIR_FILES)
+		@echo
+		@echo ===================================================
+		@echo   Create dependancies for Tools...
+		@echo ===================================================
+		$(SFMAKEDEPEND) --silent --fext=F90 --fext=F --fext=c --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
 
-anamorphosis_state: $(ANAMORPHOSIS_STATE_OBJ)
-	@echo "->anamorphosis_state"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../anamorphosis_state $(ANAMORPHOSIS_STATE_OBJ) $(LIBS)
+#ifneq "$(MAKECMDGOALS)" "clean"
+-include ./MakeDepend
+#endif
 
-build_dp: $(BUILD_DP_OBJ)
-	@echo "->build_dp"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../build_dp $(BUILD_DP_OBJ)
-
-pert_param: $(MKENSEMBLE_OBJ)
-	@echo "->pert_param"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../pert_param $(MKENSEMBLE_OBJ) $(LIBS) 
-
-fixenkf: $(FIXENKF_OBJ)
-	@echo "->fixenkf"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../fixenkf $(FIXENKF_OBJ)
-
-conservation: $(CONSERV_OBJ)
-	@echo "-> conservation"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../conservation $(CONSERV_OBJ)
+#--------------------------------------------------------------------------
+#  Target to clean
+#--------------------------------------------------------------------------
 
 clean:
-	@rm -f *.o *.mod TMP/*.* $(PROGS)
-
-%.o: %.F90
-	@echo "  $*".F90
-	@rm -f ./TMP/$*.f90
-	@cat MODEL.CPP $< | $(CPP) $(CPPFLAGS) > ./TMP/$*.f90
-	@cd ./TMP; $(CF90) -c $(FFLAGS) $(F90FLG) -o $*.o $*.f90
-
-%.o: %.F
-	@echo "  $*".F
-	@rm -f ./TMP/$*.f
-	@cat MODEL.CPP $< | $(CPP) $(CPPFLAGS) > ./TMP/$*.f
-	@cd ./TMP; $(CF77) -c $(FFLAGS) $(F77FLG) -o $*.o $*.f 2> /dev/null
-
-%.o: %.c
-	@echo "  $*".c
-	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. -I../.. ../../$*.c
+		@echo
+		@echo ===================================================
+		@echo   Clean Tools ...
+		@echo ===================================================
+		$(RM) -r $(DIR_PPSRC)/* $(DIR_LIB)/libtools.a $(DIR_OBJS)/*.o $(DIR_OBJS)/*.mod *.mod $(PROGS) $(DIR_OBJS) $(DIR_LIB) $(DIR_PPSRC) $(DIR_DOC)
+	
+# DO NOT DELETE THIS LINE - used by make depend	

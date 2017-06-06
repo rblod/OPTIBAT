@@ -1,86 +1,87 @@
+SHELL = /bin/bash
 MPI = YES
 
-include ./make.inc
-
-SHELL = /bin/bash
-VPATH = .:TMP
+include ../make.inc
 
 PROGS = EnKF
+SFMAKEDEPEND := ../Config/sfmakedepend
+DIR_LIB=lib
+DIR_FILES=src
+DIR_PPSRC=ppsrc
+DIR_DOC=doc
+DIR_OBJS=obj
 
-all: $(PROGS)
+FILENAMES =$(notdir $(basename $(wildcard src/*.F90))) $(notdir $(basename $(wildcard src/*.F))) $(notdir $(basename $(wildcard src/*.c)))
+FILES=src/*
+OBJS=$(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(FILENAMES)))
 
-ENKF_SRC_F90 = \
-qmpi.F90\
-m_parameters.F90\
-m_Generate_element_Si.F90\
-mod_analysisfields.F90\
-m_confmap.F90\
-mod_measurement.F90\
-m_oldtonew.F90\
-m_random.F90\
-m_spherdist.F90\
-distribute.F90\
-m_bilincoeff.F90\
-m_get_mod_fld.F90\
-m_get_oops_fld.F90\
-m_get_oops_grid.F90\
-m_get_oops_dim.F90\
-m_get_oops_nrens.F90\
-m_get_waves_fld.F90\
-m_get_waves_grid.F90\
-m_get_waves_dim.F90\
-m_get_waves_nrens.F90\
-m_insitu.F90\
-m_local_analysis.F90\
-m_obs.F90\
-m_parse_blkdat.F90\
-m_pivotp.F90\
-m_point2nc.F90\
-m_sort2.F90\
-m_prep_4_EnKF.F90\
-m_put_oops_fld.F90\
-m_put_waves_fld.F90\
-m_set_random_seed2.F90\
-m_uobs.F90\
-nfw.F90\
-EnKF.F90
+all: depend prepEnKF $(DIR_LIB)/libEnKF.a $(PROGS)
+		@echo
+		@echo ===================================================
+		@echo   EnKF is ok
+		@echo ===================================================
+		@echo
 
-ENKF_SRC_F77 = mod_raw_io.F
+prepEnKF:
+		@echo
+		@echo ===================================================
+		@echo   Create working directories for EnKF ...
+		@echo ===================================================
+		mkdir -p $(DIR_PPSRC)
+		mkdir -p $(DIR_OBJS)
+		mkdir -p $(DIR_LIB)
+		@echo
 
-ENKF_SRC_C = order.c
+$(DIR_LIB)/libEnKF.a: $(OBJS)
+		@echo
+		@echo ===================================================
+		@echo   Compile EnKF library...
+		@echo ===================================================
+		$(AR) -r $@ $(OBJS)
+		ranlib $@
+		@echo
 
-ENKF_OBJ = $(ENKF_SRC_C:.c=.o) $(ENKF_SRC_F77:.F=.o) $(ENKF_SRC_F90:.F90=.o)
+EnKF: $(DIR_LIB)/libEnKF.a $(DIR_PPSRC)/EnKF.f90
+		$(FC) $(LINKFLAGS) $(FFLAGS) -o EnKF $(DIR_PPSRC)/EnKF.f90 $(DIR_LIB)/libEnKF.a $(LIBS) -I$(DIR_OBJS)
 
-# some fine tuning; add more dependancies when/if required 
-#
-m_obs.o: m_uobs.o
-m_get_oops_grid.o : nfw.o 
-m_get_oops_dim.o : nfw.o 
-m_Generate_element_Si.o: m_parse_blkdat.o mod_measurement.o m_get_mod_fld.o m_insitu.o m_obs.o
-m_insitu.o: nfw.o mod_measurement.o
-m_local_analysis.o: mod_measurement.o m_point2nc.o m_parameters.o
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
+		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90
+		$(FC) $(FFLAGS) -c $(DIR_PPSRC)/$(*F).f90 -o $(DIR_OBJS)/$(*F).o
 
-EnKF: $(ENKF_OBJ)
-	@echo "->EnKF"
-	@cd ./TMP ; $(LD) $(LINKFLAGS) -o ../EnKF $(ENKF_OBJ) $(LIBS) 
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.F Makefile MODEL.CPP
+		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F > $(DIR_PPSRC)/$(*F).f
+		$(FC) $(FFLAGS) $(F77FLG) -c $(DIR_PPSRC)/$(*F).f -o $(DIR_OBJS)/$(*F).o
 
-$(ENKF_OBJ): makefile make.inc MODEL.CPP
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.c Makefile MODEL.CPP
+	$(CC) -c $(CFLAGS) -c $(DIR_FILES)/$(*F).c -o $(DIR_OBJS)/$(*F).o
+
+#--------------------------------------------------------------------------
+#  Target to create dependeanies.
+#--------------------------------------------------------------------------
+
+MakeDepend: $(DIR_FILES)
+		$(SFMAKEDEPEND) --silent --fext=F90 --fext=F --fext=c --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
+
+depend: $(DIR_FILES)
+		@echo
+		@echo ===================================================
+		@echo   Create dependancies for EnKF ...
+		@echo ===================================================
+		$(SFMAKEDEPEND) --silent --fext=F90 --fext=F --fext=c --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
+
+#ifneq "$(MAKECMDGOALS)" "clean"
+-include ./MakeDepend
+#endif
+
+#--------------------------------------------------------------------------
+#  Target to clean
+#--------------------------------------------------------------------------
 
 clean:
-	@rm -f TMP/*.*  $(PROGS)
-
-%.o: %.F90
-	@echo "  $*".F90
-	@rm -f ./TMP/$*.f90
-	@cat MODEL.CPP $*.F90 | $(CPP) $(CPPFLAGS) > ./TMP/$*.f90
-	@cd ./TMP ; $(CF90) -c $(FFLAGS) $(F90FLG) -o $*.o $*.f90
-
-%.o: %.F
-	@echo "  $*".F
-	@rm -f ./TMP/$*.f
-	@cat MODEL.CPP $*.F | $(CPP) $(CPPFLAGS)  > ./TMP/$*.f
-	@cd ./TMP ; $(CF77) -c $(FFLAGS) $(F77FLG) -o $*.o $*.f  
-
-%.o: %.c
-	@echo "  $*".c
-	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. ../$*.c
+		@echo
+		@echo ===================================================
+		@echo   Clean ...
+		@echo ===================================================
+		$(RM) -r $(DIR_PPSRC)/* $(DIR_LIB)/libprep_obs.a $(DIR_OBJS)/*.o $(DIR_OBJS)/*.mod *.mod $(PROGS) $(DIR_OBJS) $(DIR_LIB) $(DIR_PPSRC) $(DIR_DOC)
+	
+# DO NOT DELETE THIS LINE - used by make depend	

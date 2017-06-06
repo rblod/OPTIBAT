@@ -1,7 +1,8 @@
-#define ICE
+#undef ICE
 #define EXPCOV
-#define ECO
-#define IA32
+#undef ECO
+#undef IA32
 #define FFTW
 #undef CRAY
 #undef SGI
+#define QMPI

@@ -1,6 +1,7 @@
 module m_read_OOPS_gridded
 ! Ehouarn !
 ! Reads CHLA1 data and grid from the GlobColour files !
+#ifdef OOPS
 contains
 
  integer function get_nobs_OOPS_QG(nx,ny,nechx,nechy)
@@ -62,5 +63,5 @@ contains
    
  end function
 
-
+#endif
 end

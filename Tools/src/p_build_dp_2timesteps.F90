@@ -6,7 +6,7 @@ use nfw_mod
 use m_ana_exp_enkf
    implicit none
 
-   integer*4, external :: iargc
+!   integer*4, external :: iargc
    real, parameter :: onem=9806.
 
    integer imem                  ! ensemble member
@@ -105,18 +105,18 @@ use m_ana_exp_enkf
    call nfw_inq_varid(newfile, ncid,trim(cfld),fld_id)
    call nfw_get_vara_double(newfile, ncid,fld_id,(/1,1,1,1/),(/nx,ny,2,1/),pb)
    
-   do j=1,ny
-      do i=1,nx
-        if(depths(i,j).gt.0.)then
-	   call ana_phi2pi(nz,dp_tmp,phi(i,j,1:nz-1),assign(i,j,1:nz))
-	   d=sum(dp_tmp)
-	   dp(i,j,1:nz,1)=pb(i,j,1,1)*dp_tmp(1:nz)/d
-	   call ana_phi2pi(nz,dp_tmp,phi(i,j,nz:2*nz-2),assign(i,j,nz+1:2*nz))
-	   d=sum(dp_tmp)
-	   dp(i,j,nz+1:2*nz,1)=pb(i,j,2,1)*dp_tmp(1:nz)/d
-	endif
-      enddo    
-    enddo    
+!RB   do j=1,ny
+!RB      do i=1,nx
+!RB        if(depths(i,j).gt.0.)then
+!RB	   call ana_phi2pi(nz,dp_tmp,phi(i,j,1:nz-1),assign(i,j,1:nz))
+!RB	   d=sum(dp_tmp)
+!RB	   dp(i,j,1:nz,1)=pb(i,j,1,1)*dp_tmp(1:nz)/d
+!RB	   call ana_phi2pi(nz,dp_tmp,phi(i,j,nz:2*nz-2),assign(i,j,nz+1:2*nz))
+!RB	   d=sum(dp_tmp)
+!RB	   dp(i,j,nz+1:2*nz,1)=pb(i,j,2,1)*dp_tmp(1:nz)/d
+!RB	endif
+  !RB    enddo    
+    !RBenddo    
 
     cfld='dp'
     call nfw_inq_varid(newfile, ncid,trim(cfld),fld_id)

@@ -20,7 +20,7 @@ use nfw_mod
 use m_fixhycom_eco_metno
    implicit none
 
-   integer*4, external :: iargc
+!   integer*4, external :: iargc
    real, parameter :: onem=98060.
 
    integer imem                  ! ensemble member

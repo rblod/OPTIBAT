@@ -1,20 +1,14 @@
-SHELL = /bin/sh
+SHELL = /bin/bash
 
-NCDF_ROOT=/usr
-FC=gfortran
-DIR_OBJS=obj
+include ../make.inc
 
-FFLAGS=-O0 -fdefault-real-8 -fdefault-double-8 -Wall -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)  
-#-fbounds-check  -fbacktrace -g -fcheck=all
-CPP=cpp
-CPPFLAGS=-P -traditional
-
-SFMAKEDEPEND := ./sfmakedepend
+SFMAKEDEPEND := ../Config/sfmakedepend
 
 DIR_LIB=lib
 DIR_FILES=src
 DIR_PPSRC=ppsrc
 DIR_DOC=doc
+DIR_OBJS=obj
 
 FILENAMES =$(notdir $(basename $(wildcard src/*.F90)))
 FILES=$(addsuffix .F90,$(addprefix $(DIR_FILES)/,$(FILENAMES)))
@@ -30,7 +24,7 @@ all: depend  prepwkb $(DIR_LIB)/libwkb.a  wkb.exe
 prepwkb:
 	@echo
 	@echo ===================================================
-	@echo   Create working directories ...
+	@echo   Create working directories for WKB ...
 	@echo ===================================================
 	mkdir -p $(DIR_PPSRC)
 	mkdir -p $(DIR_OBJS)
@@ -69,7 +63,7 @@ depend: $(DIR_FILES)
 	$(SFMAKEDEPEND) --silent --fext=F90 --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
 
 #ifneq "$(MAKECMDGOALS)" "clean"
--include MakeDepend
+-include ./MakeDepend
 #endif
 
 #--------------------------------------------------------------------------

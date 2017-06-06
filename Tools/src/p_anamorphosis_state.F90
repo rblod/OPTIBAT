@@ -1,7 +1,9 @@
 program anamorphosis_state
 !Ehouarn!
 !prog that generates samples file!
+#ifndef QMPI
    use qmpi_fake
+#endif
    use mod_raw_io
    use m_parse_blkdat
    use m_get_micom_nrens
@@ -14,7 +16,7 @@ program anamorphosis_state
    use nfw_mod
    implicit none
 
-   integer*4, external :: iargc
+!   integer*4, external :: iargc
 
    integer:: imem                ! ensemble member
    character(len=80) :: ecotemplate,fname

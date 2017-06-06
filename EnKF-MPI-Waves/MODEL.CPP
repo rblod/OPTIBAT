@@ -11,3 +11,4 @@
 #undef DP2PHI
 #undef ASYNCHR
 #undef SMOOTH
+#define QMPI

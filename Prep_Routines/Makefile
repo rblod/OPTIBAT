@@ -1,135 +1,94 @@
-MPI = NO
+SHELL = /bin/bash
+
 include ../make.inc
 
-SHELL = /bin/bash
-VPATH = ..:.:TMP
-
 PROGS=prep_obs\
-prep_obs_OOPS\
 prep_obs_waves
 
-all: $(PROGS)
+SFMAKEDEPEND := ../Config/sfmakedepend
+DIR_LIB=lib
+DIR_FILES=src
+DIR_PPSRC=ppsrc
+DIR_DOC=doc
+DIR_OBJS=obj
 
-PREP_SRC_F90 = mod_angles.F90\
-byteswapper.F90\
-m_confmap.F90\
-m_bilincoeff.F90\
-m_get_def_wet_point.F90\
-m_nf90_err.F90\
-m_oldtonew.F90\
-m_pivotp_micom.F90\
-m_get_micom_dim.F90\
-m_get_micom_grid.F90\
-m_pivotp.F90\
-m_read_CERSAT_data.F90\
-m_read_CLS_SLA.F90\
-m_read_micom_SST.F90\
-m_read_CLS_TSLA.F90\
-m_read_MET_SST.F90\
-m_read_CLS_SSH.F90\
-m_read_CLS_SST.F90\
-m_read_CLS_SST_grid.F90\
-m_read_MET_SST_grid.F90\
-m_read_CLS_TSLA_grid.F90\
-m_read_CLS_data.F90\
-m_read_CLS_header.F90\
-m_read_FFI_glider.F90\
-m_read_ifremer_argo.F90\
-m_read_amsr_norsex.F90\
-m_read_metno_icec.F90\
-m_read_GlobC_CHLA.F90\
-m_read_OC-CCI.F90\
-m_superobs.F90\
-m_uobs.F90\
-m_write_wet_file.F90\
-mod_grid.F90\
-nfw.F90\
-qmpi.F90
+FILENAMES =$(notdir $(basename $(wildcard src/*.F90))) $(notdir $(basename $(wildcard src/*.F))) $(notdir $(basename $(wildcard src/*.c)))
+FILES=src/*
+OBJS=$(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(FILENAMES)))
 
-PREP_OBS_SRC_F90 = $(PREP_SRC_F90)\
-mod_measurement.F90\
-m_spherdist.F90\
-m_parse_blkdat.F90\
-m_get_mod_grid.F90\
-m_random.F90\
-m_set_random_seed2.F90\
-m_get_micom_fld.F90\
-m_read_SOCAT_gridded.F90\
-m_read_HAMOCC_CHLA.F90\
-m_read_MyOcean_CHLA.F90\
-p_prep_obs.F90
+all: depend prepprep $(DIR_LIB)/libprep_obs.a $(PROGS)
+		@echo
+		@echo ===================================================
+		@echo   Prep_Routines is ok
+		@echo ===================================================
+		@echo
 
-PREP_OBS_SRC_F = mod_raw_io.F
+prepprep:
+		@echo
+		@echo ===================================================
+		@echo   Create working directories for Prep_Routines ...
+		@echo ===================================================
+		mkdir -p $(DIR_PPSRC)
+		mkdir -p $(DIR_OBJS)
+		mkdir -p $(DIR_LIB)
+		@echo
 
-PREP_OBS_SRC_C = superobs.c\
-superobs3d.c
+$(DIR_LIB)/libprep_obs.a: $(OBJS)
+		@echo
+		@echo ===================================================
+		@echo   Compile Prep_Routines library...
+		@echo ===================================================
+		$(AR) -r $@ $(OBJS)
+		ranlib $@
+		@echo
 
-PREP_OBS_OOPS_SRC_F90 =m_uobs.F90\
-nfw.F90\
-qmpi.F90\
-mod_measurement.F90\
-m_random.F90\
-m_set_random_seed2.F90\
-m_write_wet_file.F90\
-p_prep_obs_OOPS.F90
+prep_obs: $(DIR_LIB)/libprep_obs.a $(DIR_PPSRC)/p_prep_obs.f90
+		$(FC) $(FFLAGS) -o prep_obs  $(DIR_PPSRC)/p_prep_obs.f90 $(DIR_LIB)/libprep_obs.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-PREP_OBS_WAVES_SRC_F90 =m_uobs.F90\
-nfw.F90\
-qmpi.F90\
-mod_measurement.F90\
-m_random.F90\
-m_set_random_seed2.F90\
-m_write_wet_file.F90\
-p_prep_obs_waves.F90
+prep_obs_OOPS: $(DIR_LIB)/libprep_obs.a $(DIR_PPSRC)/p_prep_obs_OOPS.f90
+		$(FC) $(FFLAGS) -o prep_obs_OOPS  $(DIR_PPSRC)/p_prep_obs_OOPS.f90 $(DIR_LIB)/libprep_obs.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-PREP_OBS_OBJ = $(PREP_OBS_SRC_C:.c=.o) $(PREP_OBS_SRC_F90:.F90=.o) $(PREP_OBS_SRC_F:.F=.o)
-m_pivotp_micom.o: nfw.o m_spherdist.o
-m_bilincoeff.o: m_oldtonew.o
-m_get_def_wet_point.o: m_pivotp_micom.o m_get_micom_dim.o m_confmap.o m_spherdist.o mod_measurement.o mod_grid.o
-m_get_mod_grid.o: mod_raw_io.o
-m_read_CERSAT_data.o: nfw.o
-m_read_CLS_TSLA.o: nfw.o
-p_prep_obs.o: m_uobs.o m_get_micom_grid.o
-m_uobs.o: qmpi.o
+prep_obs_waves: $(DIR_LIB)/libprep_obs.a $(DIR_PPSRC)/p_prep_obs_waves.f90
+		$(FC) $(FFLAGS) -o prep_obs_waves  $(DIR_PPSRC)/p_prep_obs_waves.f90 $(DIR_LIB)/libprep_obs.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
 
-PREP_OBS_OOPS_OBJ = $(PREP_OBS_OOPS_SRC_F90:.F90=.o)
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
+		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90
+		$(FC) $(FFLAGS) -c $(DIR_PPSRC)/$(*F).f90 -o $(DIR_OBJS)/$(*F).o -I../EnKF-MPI-Waves/obj
 
-PREP_OBS_WAVES_OBJ = $(PREP_OBS_WAVES_SRC_F90:.F90=.o)
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.F Makefile MODEL.CPP
+		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F > $(DIR_PPSRC)/$(*F).f
+		$(FC) $(FFLAGS) $(F77FLG)-c $(DIR_PPSRC)/$(*F).f -o $(DIR_OBJS)/$(*F).o
 
-prep_obs: $(PREP_OBS_OBJ)
-	@echo "->prep_obs"
-	@cd ./TMP; $(LD) $(LINKFLAGS) -o ../prep_obs $(PREP_OBS_OBJ) $(LIBS)
+$(DIR_OBJS)/%.o: $(DIR_FILES)/%.c Makefile MODEL.CPP
+	$(CC) -c $(CFLAGS) -c $(DIR_FILES)/$(*F).c -o $(DIR_OBJS)/$(*F).o -I../EnKF-MPI-Waves/src
 
-$(PREP_OBS_OBJ): makefile MODEL.CPP
+#--------------------------------------------------------------------------
+#  Target to create dependeanies.
+#--------------------------------------------------------------------------
 
-prep_obs_OOPS: $(PREP_OBS_OOPS_OBJ)
-	@echo "->prep_obs_OOPS"
-	@cd ./TMP; $(LD) $(LINKFLAGS) -o ../prep_obs_OOPS $(PREP_OBS_OOPS_OBJ) $(LIBS)
+MakeDepend: $(DIR_FILES)
+		$(SFMAKEDEPEND) --silent --fext=F90 --fext=F --fext=c --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
 
-$(PREP_OBS_OOPS_OBJ): makefile MODEL.CPP
+depend: $(DIR_FILES)
+		@echo
+		@echo ===================================================
+		@echo   Create dependancies for Prep_Routines...
+		@echo ===================================================
+		$(SFMAKEDEPEND) --silent --fext=F90 --fext=F --fext=c --file=- --moddir=$(DIR_OBJS) --objdir=$(DIR_OBJS)  $(FILES) > MakeDepend
 
-prep_obs_waves: $(PREP_OBS_WAVES_OBJ)
-	@echo "->prep_obs_waves"
-	@cd ./TMP; $(LD) $(LINKFLAGS) -o ../prep_obs_waves $(PREP_OBS_WAVES_OBJ) $(LIBS)
+#ifneq "$(MAKECMDGOALS)" "clean"
+-include ./MakeDepend
+#endif
 
-
-$(PREP_OBS_WAVES_OBJ): makefile MODEL.CPP
+#--------------------------------------------------------------------------
+#  Target to clean
+#--------------------------------------------------------------------------
 
 clean:
-	@rm -f TMP/*.f  TMP/*.o TMP/*.f90 TMP/*.h TMP/*.mod $(PROGS)
-
-%.o: %.F90
-	@echo "  $*".F90
-	@rm -f ./TMP/$*.f90
-	@cat MODEL.CPP $< | $(CPP) $(CPPFLAGS) > ./TMP/$*.f90
-	@cd ./TMP; $(CF90) -c $(FFLAGS) $(F90FLG) -o $*.o $*.f90
-
-%.o: %.F
-	@echo "  $*".F
-	@rm -f ./TMP/$*.f
-	@cat MODEL.CPP $< | $(CPP) $(CPPFLAGS) > ./TMP/$*.f
-	@cd ./TMP; $(CF77) -c $(FFLAGS) $(F77FLG) -o $*.o $*.f 2> /dev/null
-
-%.o: %.c
-	@echo "  $*".c
-	@cd ./TMP ; $(CC) -c $(CFLAGS) -o $*.o -I.. -I../.. ../$*.c
+		@echo
+		@echo ===================================================
+		@echo   Clean Prep_Routines ...
+		@echo ===================================================
+		$(RM) -r $(DIR_PPSRC)/* $(DIR_LIB)/libprep_obs.a $(DIR_OBJS)/*.o $(DIR_OBJS)/*.mod *.mod $(PROGS) $(DIR_OBJS) $(DIR_LIB) $(DIR_PPSRC) $(DIR_DOC)
+	
+# DO NOT DELETE THIS LINE - used by make depend	

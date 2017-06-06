@@ -6,7 +6,7 @@ use nfw_mod
 use m_ana_exp_enkf
    implicit none
 
-   integer*4, external :: iargc
+!   integer*4, external :: iargc
    real, parameter :: onem=9806.
 
    integer imem                  ! ensemble member

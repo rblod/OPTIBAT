@@ -14,7 +14,7 @@ program consistency
   use nfw_mod
   implicit none
 
-  integer*4, external :: iargc
+!  integer*4, external :: iargc
   integer, parameter :: maxweird = 100 ! give up reporting after 100 weird values 
   real, parameter :: onem=9806.0, undef=-1e14
 

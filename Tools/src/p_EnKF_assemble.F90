@@ -26,7 +26,7 @@ program EnKF_postprocess
    use m_put_mod_fld
    implicit none
 
-   integer*4, external :: iargc
+!   integer*4, external :: iargc
 
    integer imem                  ! ensemble member
    character(len=80) :: template,icetemplate ! restart template

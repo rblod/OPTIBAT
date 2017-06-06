@@ -81,7 +81,7 @@ MODULE wkbini
       !!!!!!!!!!
       INTEGER :: istr,iend,jstr,jend, i, j, k, &
      &          istrR,iendR,jstrR,jendR  
-      REAL(wp) ::  sbc, kh, kk, nw, &
+      REAL(wp) ::  sbc, kh,  nw, &
      &     cosw, sinw, cw, peg,  &
      &     inv_k, khn, cff1, cff2, &
      &     c_roller, wkb_bry(3)

@@ -64,7 +64,7 @@ program p_obsstats
 #endif
 
    ! Netcdf output
-   integer :: obsdim, var_id,ncid,ierr
+   integer :: obsdim, var_id,ncid,ierrc
    character(len=80) :: ncfile
 
    logical :: ex
@@ -271,43 +271,43 @@ time0 = rtc()
       print *,'An error occured when opening the netcdf file'
       stop '(obsstats)'
    end if
-   ierr=NF90_DEF_DIM(ncid,'nobs',nobs,obsdim)
+   ierrc=NF90_DEF_DIM(ncid,'nobs',nobs,obsdim)
 
-   ierr=NF90_DEF_VAR(ncid,'lon',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,obs(:)%lon)
+   ierrc=NF90_DEF_VAR(ncid,'lon',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,obs(:)%lon)
 
-   ierr=NF90_REDEF(ncid)
-   ierr=NF90_DEF_VAR(ncid,'lat',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,obs(:)%lat)
+   ierrc=NF90_REDEF(ncid)
+   ierrc=NF90_DEF_VAR(ncid,'lat',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,obs(:)%lat)
 
-   ierr=NF90_REDEF(ncid)
-   ierr=NF90_DEF_VAR(ncid,'meaninnov',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,meanD)
+   ierrc=NF90_REDEF(ncid)
+   ierrc=NF90_DEF_VAR(ncid,'meaninnov',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,meanD)
 
-   ierr=NF90_REDEF(ncid)
-   ierr=NF90_DEF_VAR(ncid,'RMSinnov',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,RMSD)
+   ierrc=NF90_REDEF(ncid)
+   ierrc=NF90_DEF_VAR(ncid,'RMSinnov',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,RMSD)
 
-   ierr=NF90_REDEF(ncid)
-   ierr=NF90_DEF_VAR(ncid,'varobs',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,RMSE)
+   ierrc=NF90_REDEF(ncid)
+   ierrc=NF90_DEF_VAR(ncid,'varobs',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,RMSE)
 
-   ierr=NF90_REDEF(ncid)
-   ierr=NF90_DEF_VAR(ncid,'varmodel',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,RMSS)
+   ierrc=NF90_REDEF(ncid)
+   ierrc=NF90_DEF_VAR(ncid,'varmodel',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,RMSS)
 
-   ierr=NF90_REDEF(ncid)
-   ierr=NF90_DEF_VAR(ncid,'maskobs',NF90_Float,obsdim,var_id)
-   ierr=NF90_ENDDEF(ncid)
-   ierr=NF90_PUT_VAR(ncid,var_id,mask_obs)
+   ierrc=NF90_REDEF(ncid)
+   ierrc=NF90_DEF_VAR(ncid,'maskobs',NF90_Float,obsdim,var_id)
+   ierrc=NF90_ENDDEF(ncid)
+   ierrc=NF90_PUT_VAR(ncid,var_id,mask_obs)
 
-   ierr=NF90_CLOSE(ncid)
+   ierrc=NF90_CLOSE(ncid)
 
 
 
