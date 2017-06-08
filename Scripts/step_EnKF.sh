@@ -46,7 +46,7 @@ let date=${ndeb}+${steps}
 # EnS
 cd ${ASSIMDIR}
 [ ! -f EnKF ] && cp ${ROOT_DIR}/EnKF-MPI-Waves/EnKF .
-#./EnKF enkf.prm
+./EnKF enkf.prm
 
 
 ans=`diff forecast001.nc analysis001.nc`
@@ -59,4 +59,4 @@ fi
 # prepare and lauch new forecast
 # let date=${ndeb}+${steps}
 cd ${SCRIPTDIR}
-# ./analysis2rst.sh ${date} ${ENSSIZE}
+ ./analysis2rst.sh ${date} ${ENSSIZE}

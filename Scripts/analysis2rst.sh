@@ -14,15 +14,15 @@ fi
 
 let Nensp1=enssize+1
 
-cd ${WORKDIR}/ASSIM
+cd ${ASSIMDIR}
 
 count=1
 while [ $count -lt ${Nensp1} ]
 do  
    count2=`echo 00$count | tail -4c`
    
-   cp analysis${count2}.nc ${FORDIR}/shoreface_out.nc
-   cp analysis${count2}.nc ${FORDIR}/ARCHIVE/shoreface_analysis${count2}_${date}.nc
+   cp analysis${count2}.nc ${FORDIR}/${CASEDIR}${count2}/shoreface_out.nc
+   cp analysis${count2}.nc ${FORDIR}/${CASEDIR}${count2}/ARCHIVE/shoreface_analysis${count2}_${date}.nc
 
 let count=count+1
 done

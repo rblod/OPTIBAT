@@ -136,8 +136,13 @@ program p_prep_obs_waves
        obs(cpt)%lat=xi(i)
        obs(cpt)%lon=eta(j)
        obs(cpt)%depth=0
-       obs(cpt) % var=0.01
-       obs(cpt)%d=fld(i,j)+noise1d(cpt)*obs(cpt) % var
+       obs(cpt) % var=0.1
+
+!       obs(cpt)%d=fld(i,j)+noise1d(cpt)*obs(cpt) % var
+!       obs(cpt)%d=fld(i,j)*(1+noise1d(cpt)*obs(cpt) % var)
+
+       obs(cpt)%d=fld(i,j)*exp(noise1d(cpt)*obs(cpt) % var-0.5*obs(cpt) % var**2)
+
        obs(cpt) %date=0
        obs(cpt) %ipiv=i
        obs(cpt) %jpiv=j

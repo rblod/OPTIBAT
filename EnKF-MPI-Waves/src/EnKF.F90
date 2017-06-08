@@ -62,6 +62,9 @@ program EnKF
   use m_parse_blkdat
   use m_random
   use m_point2nc
+#if defined (LOGT)  
+  use m_logtransform
+#endif    
  ! use netcdf
   use nfw_mod 
   implicit none
@@ -108,7 +111,10 @@ program EnKF
   integer :: m1, m2, nfields
   real :: infls(NFIELD)
 
-
+#if defined (LOGT) 
+  integer :: kana
+  character(len=3)::canaobs
+#endif
 
 #if defined(QMPI)
   call start_mpi()
@@ -207,8 +213,28 @@ program EnKF
    ! for assimilating in-situ data because of the dynamic vertical geometry in
    ! HYCOM
    !
-
+#if defined(LOGT)    
+   print*,'Iitializng the anamoporphosis' 
+   call init_anamorphosis()
+#endif   
+   
    call obs_prepareobs
+
+#if defined(LOGT)
+    print*,'Computing log-obs variance'
+    do i=1,nobs
+       if(trim(obs(i)%id)=='EPB') then
+          canaobs='epb'
+       elseif(trim(obs(i)%id)=='OCG') then
+          canaobs=' Cg'
+       endif	  
+       kana=ana_get_ind(ana_enkf,numfields_ana,canaobs)
+       if(kana/=-1)then
+	  call ana_var_obs(obs(i),ana_enkf(kana),nrens)
+       end if
+    enddo
+#endif
+
 
    allocate(S(nobs, ENSSIZE), d(nobs))
    call prep_4_EnKF(ENSSIZE, d, S, depths, meandx / 1000.0, idm, jdm, kdm)
@@ -260,7 +286,13 @@ program EnKF
             write(cmem, '(i3.3)') k
             memfile = 'forecast' // cmem
             call get_waves_fld_new(trim(memfile), readfld, k, fieldnames(m),&
-                 fieldlevel(m), 1, idm, jdm)	 
+                 fieldlevel(m), 1, idm, jdm)	
+#if defined (LOGT)
+            kana=ana_get_ind(ana_enkf,numfields_ana,fieldnames(m)) 
+	    if(kana/=-1)then
+	      call ana_log_inv_2d(readfld,idm,jdm,depths,ana_enkf(kana))
+	    end if  
+#endif		  
             ! reshaping and conversion to real(4)	    
 	    fld(:, ENSSIZE * (m - m1) + k) = reshape(readfld, (/idm * jdm/))
         
@@ -280,6 +312,12 @@ program EnKF
             memfile = 'analysis' // cmem
             ! reshaping and conversion to real(8)
             readfld = reshape(fld(:, ENSSIZE * (m - m1) + k), (/idm, jdm/))
+#if defined (LOGT)
+            kana=ana_get_ind(ana_enkf,numfields_ana,fieldnames(m)) 
+	    if(kana/=-1)then
+	      call ana_log_2d(readfld,idm,jdm,depths,ana_enkf(kana))
+	    end if  
+#endif	    	    
             call put_waves_fld(trim(memfile), readfld, k,&
                  fieldnames(m), fieldlevel(m), 1, idm, jdm)
          end do
