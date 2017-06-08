@@ -54,7 +54,10 @@ contains
     use m_Generate_element_Si
     use m_get_oops_fld
     use m_get_waves_fld
-    use m_parameters    
+    use m_parameters   
+#if defined (LOGT)
+    use m_logtransform
+#endif     
     implicit none
 
     integer, intent(in) :: nx, ny, nz ! Model size
@@ -103,7 +106,10 @@ contains
     
     Wsmth=3
 #endif    
-
+#if defined (LOGT)
+    integer :: kana
+    character(len=3)::canaobs
+#endif
 
     ! construct S=HA
     !
@@ -151,6 +157,13 @@ contains
 	     
 	       call Generate_element_Si(S(:, iens), unique_obs(iuobs),&
                     readfld, depths, nx, ny, nz, t)
+#if defined (LOGT)
+               kana=ana_get_ind(ana_enkf,numfields_ana,'epb')
+	       if(kana/=-1)then
+	          call ana_chi_exp_S(S,nobs,nrens,iens,ana_enkf(kana))   
+	       end if
+#endif				    
+		    
 	     enddo 
 	  enddo 
 #else
@@ -163,6 +176,13 @@ contains
 	     
 	     call Generate_element_Si(S(:, iens), unique_obs(iuobs),&
                   readfld, depths, nx, ny, nz, 0)
+#if defined (LOGT)
+               kana=ana_get_ind(ana_enkf,numfields_ana,'epb')
+	       if(kana/=-1)then
+	          call ana_chi_exp_S(S,nobs,nrens,iens,ana_enkf(kana))   
+	       end if
+#endif				  
+		  
 	   enddo       
 #endif 
       elseif(trim(unique_obs(iuobs))=='OCG')then
@@ -174,9 +194,15 @@ contains
                memfile='trajectory'//cmem//'_T'//cmth
 	       cfield='Cg'
 	       call get_waves_fld_new(trim(memfile),readfld,iens,cfield,0,1,nx,ny)
-	     
+	            
 	       call Generate_element_Si(S(:, iens), unique_obs(iuobs),&
                     readfld, depths, nx, ny, nz, t)
+#if defined (LOGT)
+               kana=ana_get_ind(ana_enkf,numfields_ana,' Cg')
+	       if(kana/=-1)then
+	          call ana_chi_exp_S(S,nobs,nrens,iens,ana_enkf(kana))   
+	       end if
+#endif			    
 	     enddo 
 	  enddo 
 #else
@@ -189,6 +215,12 @@ contains
 	     
 	     call Generate_element_Si(S(:, iens), unique_obs(iuobs),&
                   readfld, depths, nx, ny, nz, 0)
+#if defined (LOGT)
+               kana=ana_get_ind(ana_enkf,numfields_ana,' Cg')
+	       if(kana/=-1)then
+	          call ana_chi_exp_S(S,nobs,nrens,iens,ana_enkf(kana))   
+	       end if
+#endif		  		  
 	   enddo       
 #endif 
        else
