@@ -1,5 +1,6 @@
 #!/bin/bash
 
+. $(cd $(dirname "$0")/..; pwd)/set_path.sh
 
 if [ $# -ne 3 ]
 then
@@ -11,18 +12,7 @@ else
   step_obs=$3
 fi
 
-
-WORKDIR='/home/esimon/Rachid/'
-RUNDIR=${WORKDIR}RUN
-SCRIPTDIR=${WORKDIR}Scripts
-RUNDIR=${WORKDIR}OBS
-CASEDIR='mem'
-
-# length=1
-ENSSIZE=100
-
 cd ${WORKDIR}
-
 
 ##############
 # Observations
@@ -45,7 +35,7 @@ cd ${SCRIPTDIR}
 
 
 # save forecast
- cd ${SCRIPTDIR}
+cd ${SCRIPTDIR}
 let date=${ndeb}+${steps}
 ./save_forecast.sh ${date} ${ENSSIZE}
 
@@ -54,7 +44,8 @@ let date=${ndeb}+${steps}
 ./create_forecast.sh ${ENSSIZE}
 
 # EnS
-cd ${WORKDIR}ASSIM
+cd ${ASSIMDIR}
+[ ! -f EnKF ] && cp ${ROOT_DIR}/EnKF-MPI-Waves/EnKF .
 ./EnKF enkf.prm
 
 
@@ -68,4 +59,4 @@ fi
 # prepare and lauch new forecast
 # let date=${ndeb}+${steps}
 cd ${SCRIPTDIR}
-# ./analysis2rst.sh ${date} ${ENSSIZE}
+ ./analysis2rst.sh ${date} ${ENSSIZE}
