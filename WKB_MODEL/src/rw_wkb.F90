@@ -13,7 +13,7 @@ MODULE rw_wkb
    IMPLICIT NONE
    PRIVATE
    
-   PUBLIC :: wkb_wri, wkb_read
+   PUBLIC :: wkb_wri, wkb_read_ini, wkb_read_bry
 #define toto   
 CONTAINS
 
@@ -54,7 +54,7 @@ CONTAINS
 
    !> @brief Read wkb outputs
 
-   SUBROUTINE wkb_read
+   SUBROUTINE wkb_read_ini
       CHARACTER(lc) :: clname
       
       clname=TRIM(cn_dirin)//TRIM(cn_filein)
@@ -77,6 +77,18 @@ CONTAINS
       ENDIF   
 #endif
 
-   END SUBROUTINE wkb_read
+   END SUBROUTINE wkb_read_ini
+
+   SUBROUTINE wkb_read_bry(kread)
+   	INTEGER, INTENT(in) :: kread
+      CHARACTER(lc) :: clname
+      
+      clname=TRIM(cn_dirin)//TRIM(cn_bryin)
+        
+      CALL Read_Ncdf_var('tide'  , clname, hbry_west , kread)
+      CALL Read_Ncdf_var('period', clname, perbry_west, kread)
+      CALL Read_Ncdf_var('hs'    , clname, hsbry_west, kread)
+      CALL Read_Ncdf_var('dir'   , clname, dirbry_west, kread)
+   END SUBROUTINE wkb_read_bry
 
 END MODULE rw_wkb

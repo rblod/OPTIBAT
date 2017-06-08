@@ -142,12 +142,15 @@ CONTAINS
      &                                                            )
         enddo
       enddo               
+      
       wkx(:,1,wnew)=wkx(:,jpj-1,wnew)
       wkx(:,jpj,wnew)=wkx(:,2,wnew)
       wkx(jpi,:,wnew)=wkx(jpi-1,:,wnew)
+      wkx(1,:,wnew)=wkxbry_west(:)
       wke(:,1,wnew)=wke(:,jpj-1,wnew)
       wke(:,jpj,wnew)=wke(:,2,wnew)
       wke(jpi,:,wnew)=wke(jpi-1,:,wnew)
+      wke(1,:,wnew)=wkebry_west(:)
  !
 !---------------------------------------------------------------------
 ! Solve primary action balance equation
@@ -213,12 +216,6 @@ CONTAINS
       war(jpi,:,wnew)=war(jpi-1,:,wnew)
       war(1,:,wnew)=0.
 
-!---------------------------------------------------------------------
-! Set boundary conditions for the WKB wave quantities
-! For now, only gradient and clamped BCs are available.
-!---------------------------------------------------------------------
-!
-      call wkb_bry
 !
 !---------------------------------------------------------------------
 ! Estimate wave-associated variables for MRL_WCI/BBL routines

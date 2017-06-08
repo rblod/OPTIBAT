@@ -19,11 +19,10 @@ PROGRAM wkb
    USE wkbmod
    USE wkbcdf
    USE rw_wkb
+   USE wkbbry
    
    IMPLICIT NONE
-   
-   INTEGER :: iif
-  
+     
    CALL wkb_nam
    
    wstp=1
@@ -45,7 +44,8 @@ PROGRAM wkb
       END DO 
    ENDIF
    iwave=2
-   DO iif= nit000, nitend         ! WKB ray equation time stepping
+   DO nbstp= nit000, nitend         ! WKB ray equation time stepping
+      IF( .NOT. ln_anabry) CALL wkb_bry(nbstp)
       wstp=wnew
       wnew=wstp+1
       IF (wnew.ge.3) wnew=1

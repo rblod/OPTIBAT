@@ -12,12 +12,12 @@ MODULE par_wkb
  
    LOGICAL :: ln_rst
    INTEGER :: jpi, jpj
-   INTEGER :: nitermax, nit000, nitend, nstock
+   INTEGER :: nitermax, nit000, nitend, nstock, nbstp
    REAL(wp) :: rdx, rdt
    REAL(wp) :: eps
 
    CHARACTER(lc) :: cn_dirin, cn_dirout
-   CHARACTER(lc) :: cn_filein, cn_fileout
+   CHARACTER(lc) :: cn_filein, cn_fileout, cn_bryin
 
    LOGICAL :: ln_perio
    LOGICAL :: ln_anabry=.TRUE.
@@ -25,6 +25,7 @@ MODULE par_wkb
 
    REAL(wp) :: wkb_amp, wkb_prd, wkb_dir
    REAL(wp) :: wkb_roller, wkb_gam, wkb_btg, wkb_tide, wkb_rsb
+   REAL(wp) :: bry_frq
       
    INTEGER :: wstp 
    INTEGER :: wnew   

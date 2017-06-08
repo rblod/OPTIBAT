@@ -10,6 +10,7 @@ MODULE wkbini
    USE wkbutil
    USE wkbcdf
    USE rw_wkb
+   USE wkbbry
    
    IMPLICIT NONE
    PRIVATE
@@ -28,7 +29,8 @@ MODULE wkbini
                        ln_perio, ln_anabry,                                &
                        ln_brywest, ln_bryeast, ln_brysouth, ln_brynorth,   &
                        wkb_amp, wkb_prd, wkb_dir,                          &  
-                       wkb_roller, wkb_gam, wkb_btg, wkb_tide, wkb_rsb
+                       wkb_roller, wkb_gam, wkb_btg, wkb_tide, wkb_rsb,    &
+                       cn_bryin, bry_frq
 
       CALL ctl_opn( numnam, 'namelist', 'OLD', 'FORMATTED', 'SEQUENTIAL', -1, 6, .FALSE. )
       REWIND( numnam )              ! Namelist namctl in reference namelist : Control prints & Benchmark
@@ -68,11 +70,15 @@ MODULE wkbini
          WRITE(numout,*) '      Output file                 cn_fileout   = ', TRIM(cn_fileout)
          WRITE(numout,*) '      Periodicity (0/1)           ln_perio     = ', ln_perio
          WRITE(numout,*) '      Analytical forcing (0/1)    ln_anabry    = ', ln_anabry
-         WRITE(numout,*) '      Wave amplitude              wkb_amp      = ', wkb_amp
-         WRITE(numout,*) '      Wave period                 wkb_prd      = ', wkb_prd
-         WRITE(numout,*) '      Wave direction              wkb_dir      = ', wkb_dir
-      ENDIF
-
+         IF( ln_anabry) THEN
+            WRITE(numout,*) '      Wave amplitude              wkb_amp      = ', wkb_amp
+            WRITE(numout,*) '      Wave period                 wkb_prd      = ', wkb_prd
+            WRITE(numout,*) '      Wave direction              wkb_dir      = ', wkb_dir
+         ELSE   
+            WRITE(numout,*) '      Forcing file                cn_bryin     = ', cn_bryin
+            WRITE(numout,*) '      Forcing freq                bry_frq      = ', bry_frq
+         ENDIF
+      ENDIF   
    
    END SUBROUTINE wkb_nam
 
@@ -84,7 +90,7 @@ MODULE wkbini
       REAL(wp) ::  sbc, kh,  nw, &
      &     cosw, sinw, cw, peg,  &
      &     inv_k, khn, cff1, cff2, &
-     &     c_roller, wkb_bry(3)
+     &     c_roller, wkbbry(3)
       REAL(wp) :: wamp, wh, cfrq, cdir, Btg, gamw, khd, kw, kr, ks, &
      &     ho, dd, co, cgo, dsup, cfrc,wkb_rsb, zeps
       REAL(wp), DIMENSION(jpi,jpj) :: Dstp, zeta
@@ -99,7 +105,7 @@ MODULE wkbini
       ierr = wkb_alloc() 
       IF( ierr /= 0 )   CALL ctl_stop( 'STOP', 'wkb_alloc : unable to allocate standard wave arrays' )
 
-      CALL wkb_read
+      CALL wkb_read_ini
       !
       IF(lwp) THEN                  ! control print
          WRITE(numout,*)
@@ -139,24 +145,25 @@ MODULE wkbini
             cfrq = 2.0*pi/wkb_prd        ! peak wave frequency (rad/s)
             cdir = wkb_dir*deg2rad       ! wave direction rad
          ELSE 
+            CALL wkb_bry(0)
             IF ( ln_brywest ) THEN
-               wkb_bry(1)=wacbry_west(1) 
-               wkb_bry(2)=wkxbry_west(1)
-               wkb_bry(3)=wkebry_west(1)
+               wkbbry(1)=wacbry_west(1) 
+               wkbbry(2)=wkxbry_west(1)
+               wkbbry(3)=wkebry_west(1)
             ELSE IF ( ln_bryeast ) THEN
-               wkb_bry(1)=wacbry_east(1) 
-               wkb_bry(2)=wkxbry_east(1)
-               wkb_bry(3)=wkebry_east(1)
+               wkbbry(1)=wacbry_east(1) 
+               wkbbry(2)=wkxbry_east(1)
+               wkbbry(3)=wkebry_east(1)
             ENDIF
             !MPI
-            cff1=sqrt(wkb_bry(2)**2+wkb_bry(3)**2)
+            cff1=sqrt(wkbbry(2)**2+wkbbry(3)**2)
             inv_k =1.0/cff1
             khn =cff1*ho
             cfrq =sqrt(g*cff1*tanh(khn))
-            cosw = inv_k*wkb_bry(2)          
-            sinw = inv_k*wkb_bry(3)           
+            cosw = inv_k*wkbbry(2)          
+            sinw = inv_k*wkbbry(3)           
             cdir=ATAN2(sinw,cosw)
-            wamp=sqrt(2*wkb_bry(1)/g*cfrq)
+            wamp=sqrt(2*wkbbry(1)/g*cfrq)
          ENDIF   ! ln_anabry     
          Btg  = wkb_btg               ! B parameter
          gamw = wkb_gam               ! gamma paramemer (Hrms/h ratio)
@@ -212,7 +219,7 @@ MODULE wkbini
                                    ! S (\ep_b/rho, wave dissipation)
             END DO
          END DO
-!      ELSE      !ln_rst
+ !     ELSE      !ln_rst
 !         DO j=jstrR,jendR
 !            DO i=istrR,iendR
 !               kk=max(sqrt(wkx(i,j,wstp)**2+wke(i,j,wstp)**2),zeps)
@@ -226,51 +233,39 @@ MODULE wkbini
 !     &                      /max(frq(i,j,wstp)**2,zeps)
 !            END DO
 !         END DO
+      CALL wkb_read_ini
+
 !      ENDIF   ! ln_rst
-      write(*,*) maxval(wac), maxval(hrm)
-      CALL wkb_read
 
      IF ( ln_anabry ) THEN
          IF( ln_bryeast ) THEN
-!        if (EASTERN_EDGE) then
             DO j=jstr-1,jend+1
                wacbry_east(j)=wac(iendR,j,1)
                wkxbry_east(j)=wkx(iendR,j,1)
                wkebry_east(j)=wke(iendR,j,1)
             END DO
             !
-!        endif
          ELSE IF( ln_brywest ) THEN
-!        if (WESTERN_EDGE) then
             DO j=jstr-1,jend+1
                wacbry_west(j)=wac(istr-1,j,1)
                wkxbry_west(j)=wkx(istr-1,j,1)
                wkebry_west(j)=wke(istr-1,j,1)
             END DO
-!        endif
          ELSE IF( ln_brysouth ) THEN
-!        if (SOUTHERN_EDGE) then
             DO i=istr-1,iend+1
                wacbry_south(j)=wac(i,jstr-1,1)
                wkxbry_south(j)=wkx(i,jstr-1,1)
                wkebry_south(j)=wke(i,jstr-1,1)
             END DO
-!        endif
          ELSE IF( ln_brynorth ) THEN
-        !if (NORTHERN_EDGE) then
             DO i=istr-1,iend+1
                 wacbry_north(i)=wac(i,jendR,1)
                 wkxbry_north(i)=wkx(i,jendR,1)
                 wkebry_north(i)=wke(i,jendR,1)
             END DO
-     !endif
          ENDIF   ! bry east
-
-!  Boundary fields
       ENDIF   ! anabry  
-           
-           write(*,*) wacbry_west
-           
+                     
    END SUBROUTINE wkb_ini
 
 END MODULE wkbini

@@ -36,6 +36,7 @@ MODULE wkbcdf
           Read_Ncdf_var2d_Real_bis,   &
           Read_Ncdf_var3d_Real,   &
           Read_Ncdf_var4d_Real,   &
+          Read_Ncdf_var2d_Real_t, &
           Read_Ncdf_var3d_Real_t, &
           Read_Ncdf_var4d_Real_t, &
           Read_Ncdf_var4d_Real_nt, &
@@ -1098,6 +1099,65 @@ CONTAINS
   !     time    : time corresponding to the values to read    *    
   !                                *
   !****************************************************************
+  !
+  !
+  !**************************************************************
+  !   subroutine Read_Ncdf_var2d_real_t
+  !**************************************************************          
+  !      
+  SUBROUTINE Read_Ncdf_var2d_Real_t(varname,file,tabvar,time)
+    !      
+    !      
+    IMPLICIT NONE
+    !       
+    CHARACTER(*),INTENT(in) :: varname,file
+    INTEGER,INTENT(in) :: time
+    REAL(wp), DIMENSION(:,:), ALLOCATABLE :: tabvar
+    !
+    !local variables
+    !
+    INTEGER, DIMENSION(2) :: dimIDS
+    INTEGER :: dim1
+    INTEGER :: status,ncid
+    INTEGER :: varid             
+    !
+    status = nf90_open(file,NF90_NOWRITE,ncid)
+    !      
+    IF (status/=nf90_noerr) THEN    
+       WRITE(*,*)"unable to open netcdf file : ",file
+       STOP
+    ENDIF
+    !     
+    status = nf90_inq_varid(ncid,varname,varid)
+    !        
+    status=nf90_inquire_variable(ncid,varid,dimids=dimIDS)
+    status=nf90_inquire_dimension(ncid,dimIDS(1),len=dim1)
+    !
+    IF(.NOT. ALLOCATED(tabvar)) THEN
+       ALLOCATE(tabvar(dim1,1))  
+    ELSE
+       IF( ANY(SHAPE(tabvar) /= (/dim1,1/)) ) THEN       
+          DEALLOCATE(tabvar)   
+          ALLOCATE(tabvar(dim1,1))      
+       ENDIF
+    ENDIF
+
+    status=nf90_get_var(ncid,varid,tabvar,start=(/1,time/))
+
+    IF (status/=nf90_noerr) THEN    
+       WRITE(*,*)"unable to retrieve netcdf variable : ",TRIM(varname)
+       STOP
+    ENDIF
+    
+    !     
+    status = nf90_close(ncid)
+    !     
+  END SUBROUTINE Read_Ncdf_var2d_Real_t
+  !           
+  !**************************************************************
+  ! end subroutine Read_Ncdf_var2d_real_t
+  !**************************************************************          
+  !
   !
   !
   !**************************************************************
