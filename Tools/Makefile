@@ -9,7 +9,8 @@ fixmicom\
 anamorphosis_state\
 build_dp\
 pert_param\
-fixenkf
+fixenkf\
+ensemble_stats
 
 PROGS = EnKF_assemble\
 checkice\
@@ -18,7 +19,8 @@ fixmicom\
 anamorphosis_state\
 build_dp\
 pert_param\
-fixenkf
+fixenkf\
+ensemble_stats
 
 SFMAKEDEPEND := ../Config/sfmakedepend
 DIR_LIB=lib
@@ -84,6 +86,9 @@ fixenkf: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_fixenkf.f90
 
 conservation: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_conservation.f90
 		$(FC) $(FFLAGS) -o conservation  $(DIR_PPSRC)/p_conservation.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
+
+ensemble_stats:  $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_ensemble_stats.f90
+		$(FC) $(FFLAGS) -o ensemble_stats  $(DIR_PPSRC)/p_ensemble_stats.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 $(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
 		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90
