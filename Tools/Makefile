@@ -9,7 +9,8 @@ fixmicom\
 anamorphosis_state\
 build_dp\
 pert_param\
-fixenkf
+fixenkf\
+ensemble_stats
 
 PROGS = EnKF_assemble\
 checkice\
@@ -18,7 +19,8 @@ fixmicom\
 anamorphosis_state\
 build_dp\
 pert_param\
-fixenkf
+fixenkf\
+ensemble_stats
 
 SFMAKEDEPEND := ../Config/sfmakedepend
 DIR_LIB=lib
@@ -58,32 +60,35 @@ $(DIR_LIB)/libtools.a: $(OBJS)
 		@echo
 
 EnKF_assemble: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_EnKF_assemble.f90
-		$(FC) $(FFLAGS) -o EnKF_assemble  $(DIR_PPSRC)/p_EnKF_assemble.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o EnKF_assemble  $(DIR_PPSRC)/p_EnKF_assemble.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 
 consistency: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_consistency.f90
-		$(FC) $(FFLAGS) -o consistency  $(DIR_PPSRC)/p_consistency.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o consistency  $(DIR_PPSRC)/p_consistency.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 checkice: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_check_ice.f90
-		$(FC) $(FFLAGS) -o checkice  $(DIR_PPSRC)/p_check_ice.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o checkice  $(DIR_PPSRC)/p_check_ice.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 fixmicom: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_fixmicom.f90
-		$(FC) $(FFLAGS) -o fixmicom  $(DIR_PPSRC)/p_fixmicom.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o fixmicom  $(DIR_PPSRC)/p_fixmicom.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 anamorphosis_state: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_anamorphosis_state.f90
-		$(FC) $(FFLAGS) -o anamorphosis_state  $(DIR_PPSRC)/p_anamorphosis_state.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o anamorphosis_state  $(DIR_PPSRC)/p_anamorphosis_state.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 build_dp: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_build_dp.f90
-		$(FC) $(FFLAGS) -o build_dp  $(DIR_PPSRC)/p_build_dp.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o build_dp  $(DIR_PPSRC)/p_build_dp.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 pert_param: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_pert_param.f90
-		$(FC) $(FFLAGS) -o pert_param  $(DIR_PPSRC)/p_pert_param.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o pert_param  $(DIR_PPSRC)/p_pert_param.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 fixenkf: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_fixenkf.f90
-		$(FC) $(FFLAGS) -o fixenkf  $(DIR_PPSRC)/p_fixenkf.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o fixenkf  $(DIR_PPSRC)/p_fixenkf.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 conservation: $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_conservation.f90
-		$(FC) $(FFLAGS) -o conservation  $(DIR_PPSRC)/p_conservation.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnkF
+		$(FC) $(FFLAGS) -o conservation  $(DIR_PPSRC)/p_conservation.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
+
+ensemble_stats:  $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_ensemble_stats.f90
+		$(FC) $(FFLAGS) -o ensemble_stats  $(DIR_PPSRC)/p_ensemble_stats.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 $(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
 		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90

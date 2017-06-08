@@ -3,22 +3,22 @@ SHELL = /bin/bash
 all: WKB_MODEL EnKF-MPI-Waves Prep_Routines Tools
 
 WKB_MODEL: 
-	gmake -C WKB_MODEL
+	make -C WKB_MODEL
 	
 EnKF-MPI-Waves:
-	gmake -C EnKF-MPI-Waves
+	make -C EnKF-MPI-Waves
 
 Prep_Routines: 
-	gmake -C Prep_Routines
+	make -C Prep_Routines
 
 Tools:
-	gmake -C Tools
+	make -C Tools
 
 .PHONY: WKB_MODEL EnKF-MPI-Waves Prep_Routines Tools clean
 
 clean:
-		gmake -C WKB_MODEL clean
-		gmake -C EnKF-MPI-Waves clean
-		gmake -C Prep_Routines clean
-		gmake -C Tools clean
+		make -C WKB_MODEL clean
+		make -C EnKF-MPI-Waves clean
+		make -C Prep_Routines clean
+		make -C Tools clean
  
