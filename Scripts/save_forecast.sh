@@ -24,7 +24,8 @@ do
    cd ${FORDIR}/${CASEDIR}${count2}
    [ ! -d  ARCHIVE ] && mkdir ARCHIVE
    cp shoreface_out.nc ARCHIVE/shoreface_forecast${count2}_${date}.nc
-
+  # cp ARCHIVE/shoreface_forecast${count2}_${date}.nc shoreface_out.nc
+   
 let count=count+1
 done
 

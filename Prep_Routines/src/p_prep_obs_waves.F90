@@ -34,7 +34,7 @@ program p_prep_obs_waves
   integer :: nthisobs
   integer, allocatable, dimension(:) :: thisobs
   real,dimension(:),allocatable::noise1d,xi,eta
-  real,dimension(:,:),allocatable :: fld
+  real,dimension(:,:),allocatable :: fld,depths
   integer::nechx,nechy
 
   !ehouarn: length of the assimilation window
@@ -76,7 +76,14 @@ program p_prep_obs_waves
 !    call nfw_inq_dimlen('shoreface_obs.nc', ncid, l_ID, nl)
     
     !get the field
-    allocate(fld(ny,nx),xi(nx),eta(ny))
+    !allocate(fld(ny,nx),xi(nx),eta(ny))
+    !allocate(depths(ny,nx))
+    allocate(fld(nx,ny),xi(nx),eta(ny))
+    allocate(depths(nx,ny))
+    ! depths
+    call nfw_inq_varid('shoreface_obs.nc', ncid,'h',var_id)
+    call nfw_get_var_double('shoreface_obs.nc', ncid, var_id, depths)
+    
     if(trim(obstype)=='EPB') then
       call nfw_inq_varid('shoreface_obs.nc', ncid,'epb',var_id)
     elseif(trim(obstype)=='OCG') then
@@ -119,25 +126,27 @@ program p_prep_obs_waves
 !    do i=1+nechx,nx-nechx,nechx
 !      do j=1+nechy ,ny-nechy ,nechy 
     do i=1,nx
-      do j=1 ,ny
-       print*,trim(obstype),fld(j,i)    
+       do j=1 ,ny
+       print*,trim(obstype),fld(i,j)    
        cpt=cpt+1
 !       obs(cpt)%lat=10+20*(eta(j)-1)
 !       obs(cpt)%lon=10+20*(xi(i)-1)
-       obs(cpt)%lat=eta(j)
-       obs(cpt)%lon=xi(i)
+!!!       obs(cpt)%lat=eta(j)
+!!!       obs(cpt)%lon=xi(i)
+       obs(cpt)%lat=xi(i)
+       obs(cpt)%lon=eta(j)
        obs(cpt)%depth=0
        obs(cpt) % var=0.01
-       obs(cpt)%d=fld(j,i)+noise1d(cpt)*obs(cpt) % var
+       obs(cpt)%d=fld(i,j)+noise1d(cpt)*obs(cpt) % var
        obs(cpt) %date=0
        obs(cpt) %ipiv=i
        obs(cpt) %jpiv=j
        obs(cpt)%orig_id =0
-       obs(cpt)%i_orig_grid = -1
-       obs(cpt)%j_orig_grid = -1
+ !      obs(cpt)%i_orig_grid = -1
+ !      obs(cpt)%j_orig_grid = -1
        obs(cpt)%h = 1
        obs(cpt)%status = .true.
-       obs(cpt)%status = .false.	  
+ !      obs(cpt)%status = .false.	  
        obs(cpt)%a1 = 1
        obs(cpt)%a2 = 0
        obs(cpt)%a3 = 0
@@ -147,6 +156,12 @@ program p_prep_obs_waves
        obs(cpt)%id = trim(obstype)
       end do
     end do  
+    
+   ! do j=1,nx*ny
+   !    print*, obs(j)%d,fld(obs(j) %jpiv,obs(j) %ipiv)
+   !    print*,obs(j) %jpiv,obs(j) %ipiv
+   ! end do
+    
   deallocate(fld) 
   deallocate(noise1d)
   data_eq_obs = .true.
@@ -188,9 +203,9 @@ program p_prep_obs_waves
          '  4-bilin-coeffs    active  orig (i,j)   dp    age orig_id'
   print '(2g10.2,a6,3f6.1,3i6,4f5.1,l5,2i7,f7.1,2i5)', obs(nrobs)
   
-  !call nc_obs2d(obs,nrobs,nx,ny,depths)
+  call nc_obs2d(obs,nrobs,nx,ny,depths)
   
-  deallocate(obs)
+  deallocate(obs,depths)
 
   print *, 'prep_obs: end of processing'
 end program p_prep_obs_waves
@@ -244,4 +259,53 @@ subroutine obs2nc(nobs, obs)
   call nfw_close(fname, ncid)
 end subroutine obs2nc
 
+ 
+  subroutine nc_obs2d(obs,nobs,nx,ny,depths)
+    use mod_measurement
+    !use netcdf
+    use nfw_mod
+    implicit none
+    integer::nobs,nx,ny
+    type (measurement)::obs(nobs)
+    real,dimension(nx,ny)::depths
+    real,dimension(nx,ny)::obs2d
+    integer::k,ierr,ncid,dimnx,dimny,var_id,var_id2
+    character(len=80) :: fname   
+    
+    fname='Observations_2D.nc'
+    
+    obs2d(:,:)=-1.
+    do k=1,nobs
+      obs2d(obs(k)%ipiv, obs(k)%jpiv)=obs(k)%d 
+    enddo
+    
+    
+    call nfw_create(trim(fname), nf_write, ncid)
+        
+    call nfw_def_dim(trim(fname), ncid, 'nx', nx, dimnx)
+    call nfw_def_dim(trim(fname), ncid, 'ny', ny, dimny)    
+    !ierr=NF90_DEF_DIM(ncid,'nx',nx,dimnx)
+    !ierr=NF90_DEF_DIM(ncid,'ny',ny,dimny)
+
+    !ierr=NF90_REDEF(ncid)
+    !ierr=NF90_DEF_VAR(ncid,'CHLA',NF90_Float,(/dimnx,dimny/),var_id)
+    !ierr=NF90_ENDDEF(ncid)
+    !ierr=NF90_PUT_VAR(ncid,var_id,obs2d(1:nx,1:ny))
+    
+    call nfw_def_var(trim(fname), ncid, 'obs', nf_float,2,(/dimnx,dimny/), var_id)
+    call nfw_def_var(trim(fname), ncid, 'depths', nf_float,2,(/dimnx,dimny/), var_id2)
+    call nfw_enddef(trim(fname), ncid)
+
+    call nfw_put_var_double(trim(fname), ncid, var_id,obs2d(1:nx,1:ny))
+    call nfw_put_var_double(trim(fname), ncid, var_id2,depths(1:nx,1:ny))
+    !ierr=NF90_REDEF(ncid)
+    !ierr=NF90_DEF_VAR(ncid,'depths',NF90_Float,(/dimnx,dimny/),var_id)
+    !ierr=NF90_ENDDEF(ncid)
+    !ierr=NF90_PUT_VAR(ncid,var_id,depths(1:nx,1:ny))
+
+    !ierr=NF90_CLOSE(ncid)
+    call nfw_close(trim(fname), ncid)
+    
+ end subroutine nc_obs2d
+ 
 

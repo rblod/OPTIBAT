@@ -1,5 +1,5 @@
 SHELL = /bin/bash
-MPI = YES
+MPI = NO
 
 include ../make.inc
 
