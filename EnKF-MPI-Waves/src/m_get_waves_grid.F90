@@ -27,11 +27,13 @@ subroutine get_waves_grid(modlon, modlat, depths, mindx, meandx, nx, ny)
 
       do i=1,nx
 !        modlon(i,:)=10+20*(xi(i)-1)
-        modlon(i,:)=xi(i)
+!!!!        modlon(i,:)=xi(i)
+         modlat(i,:)=xi(i)
       enddo	
       do i=1,ny
 !        modlat(:,i)=10+20*(eta(i)-1)
-        modlat(:,i)=eta(i)
+!!!        modlat(:,i)=eta(i)
+        modlon(:,i)=eta(i)
       enddo
      
       mindx = 20

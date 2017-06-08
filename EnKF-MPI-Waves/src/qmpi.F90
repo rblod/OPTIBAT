@@ -2056,6 +2056,7 @@ end module qmpi
 
 module qmpi_fake
   implicit none
+   public
 
   logical, parameter :: master = .true.
   integer, parameter :: qmpi_num_proc = 1

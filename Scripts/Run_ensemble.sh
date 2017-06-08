@@ -1,19 +1,20 @@
-ENS_SIZE=100
+#!/bin/bash
 
-WORKDIR='/home/esimon/Rachid/RUN/'
-CASEDIR='mem'
-
-exec='./wkb.exe'
+. $(cd $(dirname "$0")/..; pwd)/set_path.sh
 
 cd ${WORKDIR}
 echo "Run_ensemble.sh: begin"
 
-for i in `seq 1 ${ENS_SIZE}`
+for i in `seq 1 ${ENSSIZE}`
 do
    mem=`echo 00$i | tail -4c`
+   [ ! -d ${CASEDIR}${mem} ] && mkdir ${CASEDIR}${mem}
    cd ${CASEDIR}${mem}
+   ln -sf ${EXECDIR}/wkb.exe .
+   ln -sf ${EXECDIR}/namelist .
+   cp ${EXECDIR}/shoreface_in.nc .
    
-   ${exec} > jobout.txt
+   ./${exec} > jobout.txt
    
    cd ${WORKDIR}
 

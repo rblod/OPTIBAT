@@ -5,4 +5,4 @@
 #define FFTW
 #undef CRAY
 #undef SGI
-#define QMPI
+#undef QMPI

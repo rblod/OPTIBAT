@@ -1,5 +1,9 @@
 module m_put_waves_fld
+#ifdef QMPI
 use qmpi, only : master
+#else
+use qmpi_fake, only : master
+#endif
 !use netcdf
 use nfw_mod
 contains

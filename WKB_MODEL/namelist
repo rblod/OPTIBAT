@@ -2,7 +2,7 @@
 &namwkb       !   parameters of the run
 !-----------------------------------------------------------------------
 !
-ln_rst=.TRUE.
+ln_rst=.false.
 jpi=61
 jpj=5
 rdx=20.
@@ -15,7 +15,7 @@ nstock=1000
 !
 cn_dirin='./'
 cn_dirout='./'
-cn_filein='shoreface_out.nc'
+cn_filein='shoreface_in.nc'
 cn_fileout='shoreface_out.nc'
 !
 ln_perio=.TRUE.

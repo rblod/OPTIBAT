@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. $(cd $(dirname "$0")/..; pwd)/set_path.sh
+
 if [ $# -ne 2 ]
 then
   echo "Usage: $0 date enssize"
@@ -9,12 +11,6 @@ else
   date=$1
   enssize=$2
 fi
-
-
-WORKDIR='/home/esimon/Rachid/'
-FORDIR=${WORKDIR}RUN
-CASEDIR='mem'
-
 
 cd ${FORDIR}
 
@@ -26,7 +22,7 @@ do
    count2=`echo 00$count | tail -4c`
    
    cd ${FORDIR}/${CASEDIR}${count2}
-   
+   [ ! -d  ARCHIVE ] && mkdir ARCHIVE
    cp shoreface_out.nc ARCHIVE/shoreface_forecast${count2}_${date}.nc
 
 let count=count+1

@@ -1,3 +1,4 @@
+NCDF_ROOT=/usr
 INC_NETCDF = -I/usr/include 
 # LIB_NETCDF= /usr/lib/libnetcdf.a
 LIB_NETCDF= -L/usr/lib/ -lnetcdff
@@ -12,13 +13,13 @@ INCS = $(INC_NETCDF) $(INC_FFTW)
 LIBS = $(LIB_NETCDF) $(LIB_LAPACK) $(LIB_FFTW)
 
 ifeq ($(MPI),YES)
-	CF90 = mpif90
+	FC = mpif90
 	PARO = # -Mmpi -Minform=inform
 	CPPFLAGS = -DQMPI
-	CC90 = gcc
+	FC = gcc
 #	CF77 = mpif77
 else
-	CF90 = gfortran
+	FC = gfortran
 	PAR0 = 
 	CC90 = gcc
 #	CF77=$(CF90)

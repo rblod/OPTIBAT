@@ -1,21 +1,17 @@
-ENS_SIZE=100
-ID_BEG=1
+#!/bin/bash
 
-WORKDIR='/home/esimon/Rachid/RUN/'
-EXECDIR='/home/esimon/Rachid/STAGE2/'
-CASEDIR='mem'
+. $(cd $(dirname "$0")/..; pwd)/set_path.sh
 
-exec='wkb.exe'
 
 cd ${WORKDIR}
 
-for i in `seq ${ID_BEG} ${ENS_SIZE}`
+for i in `seq ${ID_BEG} ${ENSSIZE}`
 do
    mem=`echo 00$i | tail -4c`
 #   mkdir ${CASEDIR}${mem}
-   cd ${CASEDIR}${mem}
+   cd ${CASEDIR}/${mem}
    
-   cp ${EXECDIR}${exec} .
+   cp ${EXECDIR}/${exec} .
 #   cp ${EXECDIR}namelist .
 #   cp ${EXECDIR}input_param.txt .
 #   cp   ${EXECDIR}shoreface_depth.nc .

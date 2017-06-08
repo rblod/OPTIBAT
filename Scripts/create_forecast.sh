@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. $(cd $(dirname "$0")/..; pwd)/set_path.sh
+
 if [ $# -ne 1 ]
 then
   echo "Usage: $0 enssize"
@@ -8,12 +10,7 @@ else
   enssize=$1
 fi
 
-WORKDIR='/home/esimon/Rachid/'
-FORDIR=${WORKDIR}RUN
-CASEDIR='mem'
-
-
-cd ${WORKDIR}ASSIM
+cd ${ROOT_DIR}/ASSIM
 
 rm forecast???.nc
 
