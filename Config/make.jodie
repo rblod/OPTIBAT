@@ -16,7 +16,7 @@ ifeq ($(MPI),YES)
 	FC = mpif90
 	PARO = # -Mmpi -Minform=inform
 	CPPFLAGS = -DQMPI
-	FC = gcc
+	CC = gcc
 #	CF77 = mpif77
 else
 	FC = gfortran
@@ -25,7 +25,7 @@ else
 #	CF77=$(CF90)
 endif
 CF77 = $(CF90)
-CC = $(CC90)
+CC = gcc
 LD = $(CF90)
 CPP = /usr/bin/cpp -traditional-cpp 
 
@@ -57,3 +57,4 @@ LINKFLAGS = $(SIZEO) $(OPTO) $(ARCHO) $(PARO) $(INLO) $(DIVO) $(DEBUG_FLAGS)
 #
 F77FLG =  -ffixed-form # -Mfixed                   
 F90FLG =  -ffree-form -ffree-line-length-0 # -Mfree
+FFLAGS=-O0 -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)
