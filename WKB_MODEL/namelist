@@ -15,8 +15,10 @@ nstock=1000
 !
 cn_dirin='./'
 cn_dirout='./'
-cn_filein='shoreface_out.nc'
+cn_filein='shoreface_depth.nc'
 cn_fileout='shoreface_out.nc'
+cn_bryin='shoreface_bry.nc'
+bry_frq=100000
 !
 ln_perio=.TRUE.
 ln_anabry=.TRUE.
