@@ -71,6 +71,8 @@ use m_param_ensemble
    nc(1)=idm
    nc(2)=jdm
    
+   
+   print*,'dimenssions:',idm,jdm,nrens
    call perturb_param(work,nrens,idm,jdm,rh,sd_d,trim(distrib))
    
    do k=1,nrens
@@ -91,7 +93,8 @@ use m_param_ensemble
       call nfw_get_vara_double(trim(oldfile), ncid, h_ID, ns, nc, fld)
       
       if(trim(distrib)=='logn')then
-        fld(:,:)=max(0.2,fld(:,:)*work(:,:,k))
+        !fld(:,:)=max(0.2,fld(:,:)*work(:,:,k))
+	fld(:,:)=fld(:,:)*work(:,:,k)
 	!print*, work(:,:,k)
       elseif(trim(distrib)=='norm')then
         fld(:,:)=fld(:,:)+work(:,:,k)	

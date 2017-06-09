@@ -57,4 +57,4 @@ LINKFLAGS = $(SIZEO) $(OPTO) $(ARCHO) $(PARO) $(INLO) $(DIVO) $(DEBUG_FLAGS)
 #
 F77FLG =  -ffixed-form # -Mfixed                   
 F90FLG =  -ffree-form -ffree-line-length-0 # -Mfree
-FFLAGS=-O0 -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)
+FFLAGS =   -O0 -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)

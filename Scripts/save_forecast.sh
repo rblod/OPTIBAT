@@ -2,14 +2,16 @@
 
 . $(cd $(dirname "$0")/..; pwd)/set_path.sh
 
-if [ $# -ne 2 ]
+if [ $# -ne 4 ]
 then
-  echo "Usage: $0 date enssize"
+  echo "Usage: $0 date enssize smooth"
   exit 1
 else
 #  rst=$1
   date=$1
   enssize=$2
+  dateobs=$3
+  traj=$4
 fi
 
 cd ${FORDIR}
@@ -23,9 +25,19 @@ do
    
    cd ${FORDIR}/${CASEDIR}${count2}
    [ ! -d  ARCHIVE ] && mkdir ARCHIVE
-   cp shoreface_out.nc ARCHIVE/shoreface_forecast${count2}_${date}.nc
+ 
+  # cp shoreface_out.nc ARCHIVE/shoreface_forecast${count2}_${date}.nc
   # cp ARCHIVE/shoreface_forecast${count2}_${date}.nc shoreface_out.nc
-   
+  
+   if [ $traj == 0 ]
+   then 
+     # forecast
+     cp shoreface_out.nc ARCHIVE/shoreface_forecast${count2}_${date}.nc
+   else
+     # trajectory for analysis
+     cp shoreface_out.nc ARCHIVE/shoreface_trajectory${count2}_${dateobs}.nc
+   fi
+
 let count=count+1
 done
 

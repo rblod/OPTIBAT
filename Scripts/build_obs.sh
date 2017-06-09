@@ -15,14 +15,16 @@ fi
 
 cd ${RUNDIR}
 
-# rm shoreface_obs.nc
-# ln -s ${OBSDIR}shoreface_obs_${date}.nc shoreface_obs.nc
+ rm shoreface_obs.nc
+ date2=`echo 0$date | tail -3c`
+# echo ${OBSDIR}/shoreface_out_${date2}.nc
+ ln -s ${OBSDIR}/shoreface_out_${date2}.nc shoreface_obs.nc
 
 for obstype in ${OBSTYPES}
 do
     echo "   $obstype:"  
     cp infile.data.${obstype} infile.data
-    ${ROOT_DIR}/Prep_Routines/prep_obs_waves
+    ${ROOT_DIR}/Prep_Routines/prep_obs_waves >> log_obs_${date}.txt
     mv observations.uf observations.uf.${obstype}  
 done
 rm -f observations.uf
