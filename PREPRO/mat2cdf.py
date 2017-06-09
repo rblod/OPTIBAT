@@ -86,9 +86,9 @@ for ll in range(31):
 	cdir = f.createVariable('dir_'+side, 'f4', ('time_counter', 'eta_rho'))
 
 	f.variables['eta_rho'][:]=X[1,0:5]
-	f.variables['tide'][0,:]=Tide[ll,:]
-	f.variables['hs'][0,:]=hs[ll,:]
-	f.variables['period'][0,:]=Tp[ll,:]
-	f.variables['dir'][0,:]=Dire[ll,:]
+	f.variables['tide_'+side][0,:]=Tide[ll,:]
+	f.variables['hs_'+side][0,:]=hs[ll,:]
+	f.variables['period_'+side][0,:]=Tp[ll,:]
+	f.variables['dir_'+side][0,:]=Dire[ll,:]
 	f.close()
 
