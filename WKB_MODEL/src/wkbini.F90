@@ -233,7 +233,6 @@ MODULE wkbini
 !     &                      /max(frq(i,j,wstp)**2,zeps)
 !            END DO
 !         END DO
-      CALL wkb_read_ini
 
 !      ENDIF   ! ln_rst
 
