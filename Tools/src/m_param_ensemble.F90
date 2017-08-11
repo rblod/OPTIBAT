@@ -25,6 +25,8 @@ contains
    variance=0.
    npoints=0
    
+   !print*,'work',work(:,:,:)
+   
    do k=1,nrens
       do j=1,jdm
       do i=1,idm 
