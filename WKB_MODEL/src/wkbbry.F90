@@ -31,6 +31,7 @@ MODULE wkbbry
          wkxbry_west_dt(:,2) = wkxbry_west_dt(:,1)
          wkebry_west_dt(:,2) = wkebry_west_dt(:,1)
          wacbry_west_dt(:,2) = wacbry_west_dt(:,1)
+         hbry_west_dt(:,2) = hbry_west_dt(:,1)
          !
          kread = ((kstp-1)*rdt+bry_frq)/bry_frq +1
          write(*,*) 'read forcing at kstp = ',  kstp 
@@ -59,7 +60,7 @@ MODULE wkbbry
          wacbry_west_dt(:,1)=0.125*g*(hrm**2)/cfrq
          wkxbry_west_dt(:,1)=kw*cosw
          wkebry_west_dt(:,1)=kw*sinw
-         END DO
+       END DO
    	ENDIF
       cff= MOD (real(kstp),bry_frq/rdt)
       cff=1 
@@ -67,6 +68,8 @@ MODULE wkbbry
    	wkxbry_west(:) = cff*wkxbry_west_dt(:,1) + (1-cff)*wkxbry_west_dt(:,2)
    	wkebry_west(:) = cff*wkebry_west_dt(:,1) + (1-cff)*wkebry_west_dt(:,2)
    	wacbry_west(:) = cff*wacbry_west_dt(:,1) + (1-cff)*wacbry_west_dt(:,2)
+   	hbry_west(:,1)   = cff*hbry_west_dt(:,1)   + (1-cff)*hbry_west_dt(:,2)
+   	
    
    END SUBROUTINE wkb_bry
 

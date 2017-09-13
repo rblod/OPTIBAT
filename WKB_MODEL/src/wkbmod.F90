@@ -14,6 +14,7 @@ MODULE wkbmod
    PUBLIC wkb_alloc
    
       REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:) :: h
+      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:) :: zeta
 
       REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:,:) :: wkx
       REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:,:) :: wke
@@ -44,6 +45,7 @@ MODULE wkbmod
      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:) :: wacbry_north_dt, warbry_north_dt, wkxbry_north_dt, wkebry_north_dt
      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:) :: wacbry_south_dt, warbry_south_dt, wkxbry_south_dt, wkebry_south_dt
      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:)  ::  hbry_west  , hbry_east  , hbry_north  , hbry_south
+     REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:)  ::  hbry_west_dt  , hbry_east_dt  , hbry_north_dt  , hbry_south_dt
      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:)  ::  hsbry_west , hsbry_east , hsbry_north , hsbry_south
      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:)  ::  perbry_west, perbry_east, perbry_north, perbry_south
      REAL(wp), PUBLIC, ALLOCATABLE, DIMENSION(:,:)  ::  dirbry_west, dirbry_east, dirbry_north, dirbry_south
@@ -52,13 +54,13 @@ CONTAINS
 	
    INTEGER FUNCTION wkb_alloc()
 
-      INTEGER :: ierr(5)
+      INTEGER :: ierr(6)
 
       ALLOCATE( wkx(jpi,jpj,2), wke(jpi,jpj,2), wac(jpi,jpj,2),   &
                 hrm(jpi,jpj,2), frq(jpi,jpj,2), wcg(jpi,jpj,2),   &
                 wsb(jpi,jpj,2), wvn(jpi,jpj,2), wfc(jpi,jpj,2),   &
                 war(jpi,jpj,2), wcr(jpi,jpj,2), wsr(jpi,jpj,2),   &
-                h(jpi,jpj)                    , STAT=ierr(1)      )
+                h(jpi,jpj), zeta(jpi,jpj)       , STAT=ierr(1)      )
 
       ALLOCATE( wdrx(jpi,jpj), wdre(jpi,jpj),   &
                 wdsp(jpi,jpj), wdrg(jpi,jpj),   &
@@ -80,6 +82,11 @@ CONTAINS
                 perbry_west(jpj,1), perbry_east(jpj,1), perbry_north(jpi,1), perbry_south(jpi,1), &
                 dirbry_west(jpj,1), dirbry_east(jpj,1), dirbry_north(jpi,1), dirbry_south(jpi,1), &
                 STAT=ierr(5) )
+      ALLOCATE( hbry_west_dt (jpj,2),   &
+                hbry_east_dt (jpj,2),   &
+                hbry_north_dt(jpi,2),   &
+                hbry_south_dt(jpi,2),   &
+                STAT=ierr(6) )
                    
       wkb_alloc = MAXVAL( ierr )
       IF( wkb_alloc /= 0 )   CALL ctl_warn('wkb_alloc: failed to allocate arrays')

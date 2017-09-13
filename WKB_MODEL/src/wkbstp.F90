@@ -32,7 +32,7 @@ CONTAINS
      &          istrR,iendR,jstrR,jendR  
       integer istr,iend,jstr,jend, i, j, wprv, wbak
       real(wp), dimension(jpi,jpj) :: cgx,cge,acx,ace, &
-     &                                             Dstp,rkx,rke,rwac,rwar,zeta
+     &                                             Dstp,rkx,rke,rwac,rwar !,zeta
       real(wp) ::sbc, kh, nw, a0, ax1, ax2, ay1, ay2, &
      &     cxu, cev, peg,  &
      &     inv_k, khn, cff, cff1, w1, w2,  &
@@ -94,7 +94,7 @@ CONTAINS
         enddo
       enddo
 
-      zeta(:,:)=0.
+      zeta(:,:)=maxval(hbry_west)
       DO j=jstrR,jendR
          DO i=istrR,iendR
             IF (zeta(i,j) .lt. Dcrit-h(i,j)) THEN

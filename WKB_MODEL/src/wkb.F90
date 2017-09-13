@@ -50,10 +50,13 @@ PROGRAM wkb
       wnew=wstp+1
       IF (wnew.ge.3) wnew=1
       CALL wkb_stp 
+      IF( MOD(nbstp,nstock) == 0) THEN
+         WRITE(*,*) 'write output at kstp = ', nbstp
+         CALL wkb_wri
+      ENDIF
    END DO 
 
    !
-   CALL wkb_wri
 
 !call get_bry_wkb
 !          call set_bry_wkb (tile)

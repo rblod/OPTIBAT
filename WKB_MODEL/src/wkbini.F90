@@ -93,7 +93,7 @@ MODULE wkbini
      &     c_roller, wkbbry(3)
       REAL(wp) :: wamp, wh, cfrq, cdir, Btg, gamw, khd, kw, kr, ks, &
      &     ho, dd, co, cgo, dsup, cfrc,wkb_rsb, zeps
-      REAL(wp), DIMENSION(jpi,jpj) :: Dstp, zeta
+      REAL(wp), DIMENSION(jpi,jpj) :: Dstp !, zeta
             
       !!!!!!!!!!
       istr=2 ; iend=jpi-1 ; jstr=2 ; jend=jpj-1
@@ -106,6 +106,7 @@ MODULE wkbini
       IF( ierr /= 0 )   CALL ctl_stop( 'STOP', 'wkb_alloc : unable to allocate standard wave arrays' )
 
       CALL wkb_read_ini
+      
       !
       IF(lwp) THEN                  ! control print
          WRITE(numout,*)
@@ -114,7 +115,20 @@ MODULE wkbini
          WRITE(numout,*) 'Max depth = ', MAXVAL(h)
       ENDIF 
       
-      zeta(:,:)=0.
+      IF(.not. ln_anabry) THEN
+         CALL wkb_bry(0)
+         zeta(:,:) = MAXVAL(hbry_west)
+      ELSE
+         zeta(:,:) = wkb_tide
+      ENDIF
+      
+      IF(lwp) THEN                  ! control print
+         WRITE(numout,*)
+         WRITE(numout,*) 'wkb_ini: Water level'
+         WRITE(numout,*) '~~~~~~~ '
+         WRITE(numout,*) 'Max level = ', MAXVAL(zeta)
+      ENDIF 
+      
       DO j=jstrR,jendR
          DO i=istrR,iendR
             IF (zeta(i,j) .lt. Dcrit-h(i,j)) THEN
@@ -130,18 +144,18 @@ MODULE wkbini
 
 !      IF( .NOT. ln_rst ) THEN
          IF (ln_brywest) THEN
-            ho=h(1,1) + zeta (1,1) + wkb_tide         !+wkb_tide       ! offshore depth
+            ho=h(1,1) + zeta (1,1) !+ wkb_tide         !+wkb_tide       ! offshore depth
          ELSE IF (ln_bryeast) THEN
-            ho=h(jpi,1) + zeta(jpi,1) + wkb_tide      !+wkb_tide       ! offshore depth
+            ho=h(jpi,1) + zeta(jpi,1)! + wkb_tide      !+wkb_tide       ! offshore depth
          ELSE IF (ln_brynorth) THEN
-            ho=h(jpi,jpj)+ zeta(jpi,jpj) +wkb_tide  !+wkb_tide       ! offshore depth
+            ho=h(jpi,jpj)+ zeta(jpi,jpj)! +wkb_tide  !+wkb_tide       ! offshore depth
          ELSE IF (ln_brysouth) THEN
-            ho=h(1,1)+ zeta (1,1)+wkb_tide          !+wkb_tide       ! offshore depth
+            ho=h(1,1)+ zeta (1,1)!+wkb_tide          !+wkb_tide       ! offshore depth
          ENDIF
    
    
          IF( ln_anabry ) THEN
-            wamp = wkb_amp               ! wave amplitude (m)
+            wamp = wkb_amp*0.7/2.        ! wave amplitude (m)
             cfrq = 2.0*pi/wkb_prd        ! peak wave frequency (rad/s)
             cdir = wkb_dir*deg2rad       ! wave direction rad
          ELSE 

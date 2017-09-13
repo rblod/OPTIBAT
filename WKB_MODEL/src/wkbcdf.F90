@@ -56,7 +56,9 @@ MODULE wkbcdf
           Write_Ncdf_var3d_Real_t, &
           Write_Ncdf_var4d_Real_t, &
           Write_Ncdf_var4d_Real_nt, &                           
-          Write_Ncdf_var2d_Real_bis,&               
+         ! Write_Ncdf_var2d_Real_bis,&               
+          Write_Ncdf_var2d_Real_t,&               
+          Write_Ncdf_var1d_Real_t ,&
           Write_Ncdf_var1d_Int,    &
           Write_Ncdf_var2d_Int,    &
           Write_Ncdf_var3d_Int,    &
@@ -1160,6 +1162,148 @@ CONTAINS
   !
   !
   !
+  
+
+  !****************************************************************
+  !   subroutine Write_Ncdf_var_t                    *
+  !                                *
+  ! subroutine to write a variable in a given file for time t    *
+  !                                *
+  !     varname : name of variable to store            *     
+  !     dimname : name of dimensions of the given variable    *
+  !     file    : netcdf file name                *
+  !     tabvar  : values of the variable to write            *
+  !     time    : time corresponding to the values to store    *    
+  !                                *
+  !****************************************************************
+  !
+  !      
+  !**************************************************************
+  !   subroutine Write_Ncdf_var2d_real_t
+  !**************************************************************
+  !      
+  SUBROUTINE Write_Ncdf_var2d_Real_t(varname,dimname,file,tabvar,time,typevar)
+    !      
+    IMPLICIT NONE
+    !       
+    CHARACTER(*),INTENT(in) :: varname,file,typevar
+    CHARACTER(*),DIMENSION(3),INTENT(in) :: dimname
+    INTEGER :: time
+    REAL(wp), DIMENSION(:,:) :: tabvar
+    !
+    ! local variables
+    !
+    INTEGER :: dimid1,dimid2,dimid3
+    INTEGER :: status,ncid
+    INTEGER :: varid             
+    !
+    status = nf90_open(file,NF90_WRITE,ncid)       
+    IF (status/=nf90_noerr) THEN    
+       WRITE(*,*)"unable to open netcdf file : ",file
+       STOP
+    ENDIF
+    !     
+    IF(time==1) THEN
+       !      
+       status = nf90_inq_dimid(ncid,dimname(1), dimid1)
+       status = nf90_inq_dimid(ncid,dimname(2), dimid2)
+       status = nf90_inq_dimid(ncid,dimname(3), dimid3)
+       status = nf90_redef(ncid)
+
+       !      
+       SELECT CASE(TRIM(typevar))
+       CASE('double')
+          status = nf90_def_var(ncid,varname,nf90_double,     &
+               (/dimid1,dimid2,dimid3/),varid) 
+       CASE('float')
+          status = nf90_def_var(ncid,varname,nf90_float,     &
+               (/dimid1,dimid2,dimid3/),varid)    
+       END SELECT
+       !
+       status = nf90_enddef(ncid)
+
+    ELSE
+       status = nf90_inq_varid(ncid, varname, varid)
+    ENDIF
+    !      
+    status = nf90_put_var(ncid,varid,tabvar,start=(/1,1,time/))
+    IF (status/=nf90_noerr) THEN    
+       WRITE(*,*)"unable to store variable ",varname, &
+        " in file ",file
+       STOP
+    ENDIF
+    !     
+    status = nf90_close(ncid)
+    ! 
+  END SUBROUTINE Write_Ncdf_var2d_Real_t
+  !      
+  !**************************************************************
+  !   end subroutine Write_Ncdf_var2d_real_t
+  !**************************************************************
+
+  !**************************************************************
+  !   subroutine Write_Ncdf_var1d_real_t
+  !**************************************************************
+  !      
+  SUBROUTINE Write_Ncdf_var1d_Real_t(varname,dimname,file,tabvar,time,typevar)
+    !      
+    IMPLICIT NONE
+    !       
+    CHARACTER(*),INTENT(in) :: varname,file,typevar
+    CHARACTER(*),DIMENSION(1),INTENT(in) :: dimname
+    INTEGER :: time
+    REAL(wp), DIMENSION(:) :: tabvar
+    !
+    ! local variables
+    !
+    INTEGER :: dimid1
+    INTEGER :: status,ncid
+    INTEGER :: varid             
+    !
+    status = nf90_open(file,NF90_WRITE,ncid)       
+    IF (status/=nf90_noerr) THEN    
+       WRITE(*,*)"unable to open netcdf file : ",file
+       STOP
+    ENDIF
+    !     
+    IF(time==1) THEN
+       !      
+       status = nf90_inq_dimid(ncid,dimname(1), dimid1)
+       status = nf90_redef(ncid)
+
+       !      
+       SELECT CASE(TRIM(typevar))
+       CASE('double')
+          status = nf90_def_var(ncid,varname,nf90_double,     &
+               (/dimid1/),varid) 
+       CASE('float')
+          status = nf90_def_var(ncid,varname,nf90_float,     &
+               (/dimid1/),varid)    
+       END SELECT
+       !
+       status = nf90_enddef(ncid)
+
+    ELSE
+       status = nf90_inq_varid(ncid, varname, varid)
+    ENDIF
+    ! 
+    status = nf90_put_var(ncid,varid,tabvar,start=(/time/))
+    IF (status/=nf90_noerr) THEN    
+       WRITE(*,*)"unable to store variable ",varname, &
+        " in file ",file
+       STOP
+    ENDIF
+    !     
+    status = nf90_close(ncid)
+    ! 
+  END SUBROUTINE Write_Ncdf_var1d_Real_t
+  !      
+  !**************************************************************
+  !   end subroutine Write_Ncdf_var1d_real_t
+  !**************************************************************
+
+  
+  
   !**************************************************************
   !   subroutine Read_Ncdf_var3d_real_t
   !**************************************************************          
