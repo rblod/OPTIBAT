@@ -2,39 +2,39 @@
 &namwkb       !   parameters of the run
 !-----------------------------------------------------------------------
 !
-ln_rst=.false.
-jpi=1000
-jpj=5
-rdx=1.
-rdt=0.05
-nitermax = 50000
-eps = 1.e-10
-nitend=1
-nitend=1000
-nstock=1000
+ln_rst=.false.             ! start from previous run
+jpi=61                     ! number of points in x-direction  
+jpj=5                      ! number of points in y-direction                        
+rdx=20.                    ! resolution (m)
+rdt=0.5                    ! time step (s) 
+nitermax = 50000           ! max iter for convergence
+eps = 1.e-10               ! criterion for convergence
+nitend=1                   ! first time step (-)
+nitend=43200               ! last  time step (-), here 6 hours duration 
+nstock=4320                ! frequency of output in time step
 !
-cn_dirin='./'
-cn_dirout='./'
-cn_filein='shoreface_out.nc'
-cn_fileout='shoreface_out.nc'
-cn_bryin='shoreface_bry.nc'
-bry_frq=100000
+cn_dirin='./'                  ! input directory  
+cn_dirout='./'                 ! output directory
+cn_filein=' depth_file_0.nc'   ! input file for bathy
+cn_bryin='shoreface_bry.nc'    ! input file for forcing
+bry_frq=300                    ! frequency of input file (s)     
+cn_fileout='shoreface_out.nc'  ! output file
 !
-ln_perio=.TRUE.
-ln_anabry=.false.
-ln_brywest=.TRUE.
-ln_bryeast=.FALSE.
-ln_brysouth=.FALSE.
+ln_perio=.TRUE.           ! periodic domain
+ln_anabry=.TRUE.          ! analytical forcing 
+ln_brywest=.TRUE.         ! location of the offshore boudary
+ln_bryeast=.FALSE.        ! not really in S/W/N/E but relative to the local 
+ln_brysouth=.FALSE.       ! repere. West is offshore left and is highly recommended ...
 ln_brynorth=.FALSE.
 !
-wkb_amp=2.
-wkb_prd=10.
-wkb_dir=0.0
+wkb_amp=2.                ! hs
+wkb_prd=8.3              ! Wave period (s)
+wkb_dir=-10.0             ! Wave angle (degree) relative to the shore normal
+wkb_tide=0.               ! Constant water anomaly
 !
 wkb_roller=0.5
 wkb_rsb=0.1
 wkb_gam=0.3
 wkb_btg=0.7
-wkb_tide=0.
 /
 
