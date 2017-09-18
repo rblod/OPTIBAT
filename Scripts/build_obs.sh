@@ -20,11 +20,14 @@ cd ${RUNDIR}
 # echo ${OBSDIR}/shoreface_out_${date2}.nc
  ln -s ${OBSDIR}/shoreface_out_${date2}.nc shoreface_obs.nc
 
+\rm log_obs_${date}.txt
+touch log_obs_${date}.txt
+
 for obstype in ${OBSTYPES}
 do
     echo "   $obstype:"  
     cp infile.data.${obstype} infile.data
-    ${ROOT_DIR}/Prep_Routines/prep_obs_waves >> log_obs_${date}.txt
+    ${ROOT_DIR}/Prep_Routines/prep_obs_waves #>> log_obs_${date}.txt
     mv observations.uf observations.uf.${obstype}  
 done
 rm -f observations.uf

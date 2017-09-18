@@ -56,7 +56,7 @@ program p_prep_obs_waves
   read(fname,'(i2)')nechy
 
   print *, 'Data producer: ', trim(producer)
-  print *, 'Data to be processed for TOPAZ: ', trim(obstype)
+  print *, 'Data to be processed for OPTIBAT : ', trim(obstype)
   print *, 'Filenames to be processed are: "', trim(fnamehdr), '" "', trim(fname), '"'
   print *, 'Result of processing is stored in temporary file "observation.uf"'
 
@@ -69,11 +69,11 @@ program p_prep_obs_waves
     ! Get dimension id in netcdf file ...
     call nfw_inq_dimid('shoreface_obs.nc', ncid, 'xi_rho', x_ID)
     call nfw_inq_dimid('shoreface_obs.nc', ncid, 'eta_rho', y_ID)
-!    call nfw_inq_dimid('shoreface_obs.nc', ncid, 'time', l_ID)
+    call nfw_inq_dimid('shoreface_obs.nc', ncid, 'time_counter', l_ID)
     !Get the dimension
     call nfw_inq_dimlen('shoreface_obs.nc', ncid, x_ID, nx)
     call nfw_inq_dimlen('shoreface_obs.nc', ncid, y_ID, ny)
-!    call nfw_inq_dimlen('shoreface_obs.nc', ncid, l_ID, nl)
+    call nfw_inq_dimlen('shoreface_obs.nc', ncid, l_ID, nl)
     
     !get the field
     !allocate(fld(ny,nx),xi(nx),eta(ny))
@@ -89,22 +89,22 @@ program p_prep_obs_waves
     elseif(trim(obstype)=='OCG') then
       call nfw_inq_varid('shoreface_obs.nc', ncid,'Cg',var_id)
     end if  
-    call nfw_get_var_double('shoreface_obs.nc', ncid, var_id, fld)
+    call nfw_get_vara_double('shoreface_obs.nc', ncid, var_id, (/1,1,nl/),(/nx,ny,1/),fld) ! change here for temporral reading
     
     call nfw_inq_varid('shoreface_obs.nc', ncid,'xi_rho',var_id)
     call nfw_get_var_double('shoreface_obs.nc', ncid, var_id, xi)
     
     call nfw_inq_varid('shoreface_obs.nc', ncid,'eta_rho',var_id)
     call nfw_get_var_double('shoreface_obs.nc', ncid, var_id, eta)
+    print *, 'The model dimension is :',nx,ny
+    
     
     call nfw_close('shoreface_obs.nc',ncid)
-    
-    print *, 'The model dimension is :',nx,ny
-  else
+  !   stop
+ else
       stop 'ERROR: file .nc is missing'
   endif
    
-
   dosuperob = .false.
   is3d = .false.
 

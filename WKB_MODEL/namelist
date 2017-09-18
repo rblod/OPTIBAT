@@ -11,11 +11,11 @@ nitermax = 50000           ! max iter for convergence
 eps = 1.e-10               ! criterion for convergence
 nitend=1                   ! first time step (-)
 nitend=43200               ! last  time step (-), here 6 hours duration 
-nstock=4320                ! frequency of output in time step
+nstock=43200               ! frequency of output in time step
 !
 cn_dirin='./'                  ! input directory  
 cn_dirout='./'                 ! output directory
-cn_filein=' depth_file_0.nc'   ! input file for bathy
+cn_filein='shoreface_in.nc'   ! input file for bathy
 cn_bryin='shoreface_bry.nc'    ! input file for forcing
 bry_frq=300                    ! frequency of input file (s)     
 cn_fileout='shoreface_out.nc'  ! output file

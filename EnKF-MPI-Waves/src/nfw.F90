@@ -175,7 +175,9 @@ contains
     integer :: status
 
     status = nf_close(ncid)
-    if (status /= 0) call quit1(fname, 'nf_close', status)
+    if (status /= 0) THEN
+    call quit1(fname, 'nf_close', status)
+    endif
   end subroutine nfw_close
 
   subroutine nfw_inq_unlimdim(fname, ncid, unlimdimid)

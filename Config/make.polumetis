@@ -1,17 +1,20 @@
 FC=mpif90
-FFLAGS=-O0 -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)
+FFLAGS= -g -fcheck=all -O0 -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)
 #-fbounds-check  -fbacktrace -g -fcheck=all -Wall
 CPP=cpp
 CPPFLAGS=-P -traditional -D_G95_
-CC=gcc
+CPPARCH = -DIA32 -DFFTW -DNOMPIR8                                                                                                                               
+CPPFLAGS += $(CPPARCH) -DF90_NOFLUSH                                                                                                                          
+
+CC=mpicc
 CFLAGS = -Df2cFortran 
 
 NCDF_ROOT=/usr/local
 INC_NETCDF = -I$(NCDF_ROOT)/include
 LIB_NETCDF= -L$(NCDF_ROOT)/lib/ -lnetcdf -lnetcdff
 LIB_LAPACK = -L/opt/local/lib -llapack
-INC_FFTW = -I/opt/local/include
-LIB_FFTW = -L/opt/local/lib -lfftw3 -lm
+INC_FFTW = -I/usr/local/include
+LIB_FFTW = -L/usr/local/lib -lfftw3 -lm
 
 INCS = $(INC_NETCDF) $(INC_FFTW)
 LIBS = $(LIB_NETCDF) $(LIB_LAPACK) $(LIB_FFTW)
@@ -19,7 +22,7 @@ LIBS = $(LIB_NETCDF) $(LIB_LAPACK) $(LIB_FFTW)
 # language-specific flags
 #
 F77FLG =  -ffixed-form # -Mfixed
-F90FLG =  -ffree-form -ffree-line-length-0 # -Mfree
+F90FLG =  -g -fcheck=all -ffree-form -ffree-line-length-0 # -Mfree
 
 MPI = NO
 

@@ -1,4 +1,5 @@
 #!/opt/local/bin/python
+# a sample script to create input data for wkb from a .mat file
 
 import os,sys
 from netCDF4 import Dataset as netcdf

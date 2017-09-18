@@ -91,11 +91,11 @@ ensemble_stats:  $(DIR_LIB)/libtools.a $(DIR_PPSRC)/p_ensemble_stats.f90
 		$(FC) $(FFLAGS) -o ensemble_stats  $(DIR_PPSRC)/p_ensemble_stats.f90 $(DIR_LIB)/libtools.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
 
 $(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
-		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90
-		$(FC) $(FFLAGS) -c $(DIR_PPSRC)/$(*F).f90 -o $(DIR_OBJS)/$(*F).o -I../EnKF-MPI-Waves/obj
+		$(CPP) $(INCS) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90
+		$(FC) $(FFLAGS) -c $(DIR_PPSRC)/$(*F).f90 -o $(DIR_OBJS)/$(*F).o -I../EnKF-MPI-Waves/obj $(INCS) 
 
 $(DIR_OBJS)/%.o: $(DIR_FILES)/%.F Makefile MODEL.CPP
-		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F > $(DIR_PPSRC)/$(*F).f
+		$(CPP) $(INCS) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F > $(DIR_PPSRC)/$(*F).f
 		$(FC) $(FFLAGS) $(F77FLG)-c $(DIR_PPSRC)/$(*F).f -o $(DIR_OBJS)/$(*F).o
 
 $(DIR_OBJS)/%.o: $(DIR_FILES)/%.c Makefile MODEL.CPP

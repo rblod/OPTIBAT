@@ -1,1 +1,1 @@
-/home/esimon/Rachid/V1.01/OPTIBAT/DATA/Shoreface_evol/shoreface_out_02.nc
+../WKB_MODEL/shoreface_out.nc
