@@ -43,13 +43,13 @@ $(DIR_LIB)/libprep_obs.a: $(OBJS)
 		@echo
 
 prep_obs: $(DIR_LIB)/libprep_obs.a $(DIR_PPSRC)/p_prep_obs.f90
-		$(FC) $(FFLAGS) -o prep_obs  $(DIR_PPSRC)/p_prep_obs.f90 $(DIR_LIB)/libprep_obs.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
+		$(FC) $(FFLAGS) -o prep_obs  $(DIR_PPSRC)/p_prep_obs.f90 $(DIR_LIB)/libprep_obs.a -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF $(LIBS)
 
 prep_obs_OOPS: $(DIR_LIB)/libprep_obs.a $(DIR_PPSRC)/p_prep_obs_OOPS.f90
-		$(FC) $(FFLAGS) -o prep_obs_OOPS  $(DIR_PPSRC)/p_prep_obs_OOPS.f90 $(DIR_LIB)/libprep_obs.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
+		$(FC) $(FFLAGS) -o prep_obs_OOPS  $(DIR_PPSRC)/p_prep_obs_OOPS.f90 $(DIR_LIB)/libprep_obs.a -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF $(LIBS)
 
 prep_obs_waves: $(DIR_LIB)/libprep_obs.a $(DIR_PPSRC)/p_prep_obs_waves.f90
-		$(FC) $(FFLAGS) -o prep_obs_waves  $(DIR_PPSRC)/p_prep_obs_waves.f90 $(DIR_LIB)/libprep_obs.a $(LIBS) -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF
+		$(FC) $(FFLAGS) -o prep_obs_waves  $(DIR_PPSRC)/p_prep_obs_waves.f90 $(DIR_LIB)/libprep_obs.a -I../EnKF-MPI-Waves/obj -L../EnKF-MPI-Waves/lib -lEnKF $(LIBS)
 
 $(DIR_OBJS)/%.o: $(DIR_FILES)/%.F90 Makefile MODEL.CPP
 		$(CPP) -include MODEL.CPP $(CPPFLAGS) $(DIR_FILES)/$(*F).F90 > $(DIR_PPSRC)/$(*F).f90

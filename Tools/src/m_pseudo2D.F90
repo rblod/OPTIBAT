@@ -47,7 +47,7 @@ subroutine pseudo2D(Amat,nx,ny,lde,rh,n1,n2)
 #if defined(IA32) && defined(FFTW)
    integer*8, save :: plan
    real*8 :: fftwy(n1,n2)
-   #include "fftw3.f"
+#include "fftw3.f"
 #endif
    !include 'fftw3.f'
 
