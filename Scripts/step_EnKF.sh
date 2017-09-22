@@ -45,7 +45,7 @@ echo '--- Running forecast  ---' >> ${SCRIPTDIR}/step_EnKF.output
 echo '  ' >> ${SCRIPTDIR}/step_EnKF.output
   ./Run_ensemble.sh ${ndeb} >> step_EnKF.output
 
-rreerr
+rreerree
 ################
 # ANALYSIS
 ###############
