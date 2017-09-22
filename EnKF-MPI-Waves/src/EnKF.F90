@@ -88,7 +88,7 @@ program EnKF
   real, allocatable, dimension(:,:) :: S ! ensemble observations HE
   real, allocatable, dimension(:)   :: d ! d - Hx
 
-  integer k, m
+  integer k, m,kcount
 
   ! "New" variables used in the parallelization 
   integer, dimension(:,:), allocatable :: nlobs_array
@@ -124,7 +124,10 @@ program EnKF
   ! Read the characteristics of the assimilation to be carried out.
 
 !  if (iargc() /= 1) then
+   kcount=command_argument_count()
+   write(*,*) kcount
   if (command_argument_count() /= 1) then
+     write(*,*) command_argument_count()
      print *, 'Usage: EnKF <parameter file>'
      print *, '       EnKF -h'
      print *, 'Options:'

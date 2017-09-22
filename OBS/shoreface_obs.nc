@@ -1,1 +1,1 @@
-../WKB_MODEL/shoreface_out.nc
+/Users/rblod/201706_ASSIM/OPTIBAT/DATA//shoreface_out_00.nc

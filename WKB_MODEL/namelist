@@ -10,8 +10,8 @@ rdt=0.5                    ! time step (s)
 nitermax = 50000           ! max iter for convergence
 eps = 1.e-10               ! criterion for convergence
 nitend=1                   ! first time step (-)
-nitend=43200               ! last  time step (-), here 6 hours duration 
-nstock=43200               ! frequency of output in time step
+nitend=4320               ! last  time step (-), here 6 hours duration 
+nstock=4320               ! frequency of output in time step
 !
 cn_dirin='./'                  ! input directory  
 cn_dirout='./'                 ! output directory

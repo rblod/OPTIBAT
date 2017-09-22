@@ -2,7 +2,7 @@
 
 . $(cd $(dirname "$0")/..; pwd)/set_path.sh
 
-
+[ ! -d ${WORKDIR} ] && mkdir ${WORKDIR}
 cd ${WORKDIR}
 
 for i in `seq ${ID_BEG} ${ENSSIZE}`
@@ -14,9 +14,9 @@ do
    
    
    # model
-#   cp ${EXECDIR}/${exec} .
-#   cp ${EXECDIR}namelist .
-#   ln -s ${EXECDIR}/namelist .
+#   \cp ${EXECDIR}/${exec} .
+   #cp ${EXECDIR}namelist .
+#   ln -fs ${EXECDIR}/namelist .
    
    
 #   cp ${EXECDIR}input_param.txt .

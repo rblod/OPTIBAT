@@ -13,6 +13,7 @@ else
 fi
 
 
+[ ! -d ${RUNDIR} ] && mkdir ${RUNDIR}
 cd ${RUNDIR}
 
  rm shoreface_obs.nc

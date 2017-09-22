@@ -12,7 +12,8 @@ else
   step_obs=$3
 fi
 
-cd ${WORKDIR} # useless ???
+#cd ${WORKDIR} # useless ???
+${SCRIPTDIR}/create_config_ensemble.sh
 
 if [ "$1" == 1 ]; then
   [ -f ${SCRIPTDIR}/step_EnKF.output ] && \rm ${SCRIPTDIR}/step_EnKF.output
@@ -34,8 +35,6 @@ echo '--- Building obs  ---' >> ${SCRIPTDIR}/step_EnKF.output
 echo '  ' >> ${SCRIPTDIR}/step_EnKF.output
 ./build_obs.sh ${step_obs} >> step_EnKF.output
 
-
-exit
 ############
 # Forecast
 ############
@@ -46,6 +45,7 @@ echo '--- Running forecast  ---' >> ${SCRIPTDIR}/step_EnKF.output
 echo '  ' >> ${SCRIPTDIR}/step_EnKF.output
   ./Run_ensemble.sh ${ndeb} >> step_EnKF.output
 
+exit
 ################
 # ANALYSIS
 ###############
@@ -66,16 +66,17 @@ echo '  ' >> ${SCRIPTDIR}/step_EnKF.output
 # link files
 cd ${SCRIPTDIR}
 echo '--- Link forecast  ---' >> ${SCRIPTDIR}/step_EnKF.output
-echo '  ' >> ${SCRIPTDIR}/step_EnKF.output
+echo "  " >> ${SCRIPTDIR}/step_EnKF.output
 ./create_forecast.sh ${date} ${ENSSIZE} ${step_obs} >> step_EnKF.output
 
 # EnS
 cd ${ASSIMDIR}
 echo '--- Starting assimilation forecast  ---' >> ${SCRIPTDIR}/step_EnKF.output
-echo '  ' >> ${SCRIPTDIR}/step_EnKF.output
+echo '    ' >> ${SCRIPTDIR}/step_EnKF.output
 [ ! -f EnKF ] && cp ${ROOT_DIR}/EnKF-MPI-Waves/EnKF .
 ./EnKF enkf.prm > log_assim_${step_obs}.txt
 
+exit
 
 ans=`diff forecast001.nc analysis001.nc`
 if [ -z "${ans}" ] 
