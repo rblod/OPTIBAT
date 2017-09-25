@@ -15,6 +15,7 @@ MODULE rw_wkb
    
    PUBLIC :: wkb_wri, wkb_read_ini, wkb_read_bry
    
+   LOGICAL :: file_exist=.FALSE.
    INTEGER :: time_out
    
 #define toto 
@@ -30,7 +31,7 @@ CONTAINS
   
       clname=TRIM(cn_dirout)//TRIM(cn_fileout)
       
-      IF(nbstp==nit000)THEN
+      IF(.NOT. file_exist)THEN
          status = nf90_create(clname,NF90_WRITE,ncid)
          status = nf90_close(ncid)
 
@@ -39,6 +40,7 @@ CONTAINS
          CALL Write_Ncdf_dim(dimnames(2), clname, jpj)
          CALL Write_Ncdf_dim(dimnames(3), clname, 0)
          time_out=1
+         file_exist=.true.
       ENDIF
        
       CALL Write_Ncdf_var('xi_rho' , dimnames(1),clname, (/ (ji*rdx , ji=1,jpi)/), 'float')
