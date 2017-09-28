@@ -42,8 +42,9 @@ PROGRAM wkb
          iwave=iwave+1
          thwave=MAX(av_wac,av_wkn)
       END DO 
-   ENDIF
+  ENDIF
    iwave=2
+      !   CALL wkb_wri
    DO nbstp= nit000, nitend         ! WKB ray equation time stepping
       IF( .NOT. ln_anabry) CALL wkb_bry(nbstp)
       wstp=wnew

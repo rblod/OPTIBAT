@@ -36,13 +36,15 @@ subroutine get_waves_fld_new(memfile,fld,iens,cfld,vlevel,tlevel,nx,ny)
      call nfw_open(trim(memfile)//'.nc', nf_nowrite, ncid)
      call nfw_inq_varid(trim(memfile)//'.nc', ncid,trim(cfld),vFIELD_ID)
  
-     allocate(ns(2))
-     allocate(nc(2))
+     allocate(ns(3))
+     allocate(nc(3))
      ns(1)=1
      ns(2)=1
+     ns(3)=1
      	
      nc(1)=nx
      nc(2)=ny
+     nc(3)=1
      
      call nfw_get_vara_double(trim(memfile)//'.nc', ncid, vFIELD_ID, ns, nc, readfld)
      fld=readfld(:,:)

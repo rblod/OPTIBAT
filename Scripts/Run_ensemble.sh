@@ -16,7 +16,7 @@ do
    ln -sf ${EXECDIR}/wkb.exe .
    ln -sf ${EXECDIR}/namelist .
    ln -sf ${OBSDIR}/bryfile_${date2}.nc shoreface_bry.nc
-   cp ${EXECDIR}/shoreface_in.nc .
+#   cp ${EXECDIR}/shoreface_in.nc .
    
    ./${exec} > jobout.txt
    

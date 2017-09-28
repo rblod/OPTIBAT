@@ -2,20 +2,20 @@
 &namwkb       !   parameters of the run
 !-----------------------------------------------------------------------
 !
-ln_rst=.false.             ! start from previous run
+ln_rst=.true.             ! start from previous run
 jpi=61                     ! number of points in x-direction  
 jpj=5                      ! number of points in y-direction                        
 rdx=20.                    ! resolution (m)
 rdt=0.5                    ! time step (s) 
 nitermax = 50000           ! max iter for convergence
 eps = 1.e-10               ! criterion for convergence
-nitend=1                   ! first time step (-)
-nitend=4320               ! last  time step (-), here 6 hours duration 
-nstock=4320               ! frequency of output in time step
+nit000=1                   ! first time step (-)
+nitend=10               ! last  time step (-), here 6 hours duration 
+nstock=10               ! frequency of output in time step
 !
 cn_dirin='./'                  ! input directory  
 cn_dirout='./'                 ! output directory
-cn_filein='shoreface_in.nc'   ! input file for bathy
+cn_filein='shoreface_out.nc'   ! input file for bathy
 cn_bryin='shoreface_bry.nc'    ! input file for forcing
 bry_frq=300                    ! frequency of input file (s)     
 cn_fileout='shoreface_out.nc'  ! output file
@@ -32,7 +32,7 @@ wkb_prd=8.3              ! Wave period (s)
 wkb_dir=-10.0             ! Wave angle (degree) relative to the shore normal
 wkb_tide=0.               ! Constant water anomaly
 !
-wkb_roller=0.5
+wkb_roller=0.
 wkb_rsb=0.1
 wkb_gam=0.3
 wkb_btg=0.7

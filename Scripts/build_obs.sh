@@ -28,12 +28,13 @@ for obstype in ${OBSTYPES}
 do
     echo "   $obstype:"  
     cp infile.data.${obstype} infile.data
-    ${ROOT_DIR}/Prep_Routines/prep_obs_waves #>> log_obs_${date}.txt
+    ${ROOT_DIR}/Prep_Routines/prep_obs_waves >> log_obs_${date}.txt
     mv observations.uf observations.uf.${obstype}  
 done
-rm -f observations.uf
-touch observations.uf
+rm -f ${ASSIMDIR}/observations.uf
+touch ${ASSIMDIR}/observations.uf
 for obstype in $OBSTYPES
 do
-    cat observations.uf.${obstype} >> observations.uf
+    cat observations.uf.${obstype} >> ${ASSIMDIR}/observations.uf
+    \mv  observations-${obstype}.nc ${ASSIMDIR}/.
 done

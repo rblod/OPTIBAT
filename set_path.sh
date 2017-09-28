@@ -16,7 +16,7 @@ CASEDIR='mem'
 #- information for ssimilation cycle
 OBSTYPES="OCG EPB"  # variables to Cuse
 exec='wkb.exe'      # executable
-ENSSIZE=10         # number of ensemble members
+ENSSIZE=100         # number of ensemble members
 ID_BEG=1
 SMOOTH=0
 

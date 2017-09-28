@@ -14,7 +14,7 @@ fi
 
 cd ${ROOT_DIR}/ASSIM
 
-rm forecast???.nc
+\rm forecast???.nc
 
 let Nensp1=enssize+1
 
@@ -39,7 +39,7 @@ do
    fi  
      
      
-  # cp forecast${count2}.nc analysis${count2}.nc
+   \cp forecast${count2}.nc analysis${count2}.nc
    
 let count=count+1
 done

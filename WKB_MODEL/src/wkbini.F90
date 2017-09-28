@@ -89,7 +89,7 @@ MODULE wkbini
      &          istrR,iendR,jstrR,jendR  
       REAL(wp) ::  sbc, kh,  nw, &
      &     cosw, sinw, cw, peg,  &
-     &     inv_k, khn, cff1, cff2, &
+     &     inv_k, khn, cff1, cff2, kk,&
      &     c_roller, wkbbry(3)
       REAL(wp) :: wamp, wh, cfrq, cdir, Btg, gamw, khd, kw, kr, ks, &
      &     ho, dd, co, cgo, dsup, cfrc,wkb_rsb, zeps
@@ -142,7 +142,7 @@ MODULE wkbini
       cfrc = 0.5/sqrt(pi)
       peg=8.0/g
 
-!      IF( .NOT. ln_rst ) THEN
+      IF( .NOT. ln_rst ) THEN
          IF (ln_brywest) THEN
             ho=h(1,1) + zeta (1,1) !+ wkb_tide         !+wkb_tide       ! offshore depth
          ELSE IF (ln_bryeast) THEN
@@ -233,7 +233,7 @@ MODULE wkbini
                                    ! S (\ep_b/rho, wave dissipation)
             END DO
          END DO
- !     ELSE      !ln_rst
+      ELSE      !ln_rst
 !         DO j=jstrR,jendR
 !            DO i=istrR,iendR
 !               kk=max(sqrt(wkx(i,j,wstp)**2+wke(i,j,wstp)**2),zeps)
@@ -241,14 +241,14 @@ MODULE wkbini
 !               nw=0.5*(1.0+2.0*kh/max(sinh(2.0*kh),zeps))
 !               wvn(i,j,wstp)=kk
 !               frq(i,j,wstp)=sqrt(g*kk*tanh(kh))
-!!               hrm(i,j,wstp)=sqrt(peg*max(wac(i,j,wstp),0.0)*frq(i,j,wstp))
+!               hrm(i,j,wstp)=sqrt(peg*max(wac(i,j,wstp),0.0)*frq(i,j,wstp))
 !               wcr(i,j,wstp)=frq(i,j,wstp)/max(kk**2,zeps)  ! c/k
 !               wsr(i,j,wstp)=c_roller*war(i,j,wstp)*kk   &  ! ep_r/rho/sigma
 !     &                      /max(frq(i,j,wstp)**2,zeps)
 !            END DO
 !         END DO
 
-!      ENDIF   ! ln_rst
+      ENDIF   ! ln_rst
 
      IF ( ln_anabry ) THEN
          IF( ln_bryeast ) THEN
