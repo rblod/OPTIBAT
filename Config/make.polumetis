@@ -1,5 +1,6 @@
 FC=mpif90
 FFLAGS= -g -fcheck=all -O0 -fdefault-real-8 -fdefault-double-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)
+FFLAGS= -O2 -fdefault-real-8 -ffree-line-length-none -I$(NCDF_ROOT)/include -I$(DIR_OBJS) -J$(DIR_OBJS)
 #-fbounds-check  -fbacktrace -g -fcheck=all -Wall
 CPP=cpp
 CPPFLAGS=-P -traditional -D_G95_
