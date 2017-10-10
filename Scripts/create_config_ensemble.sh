@@ -15,7 +15,7 @@ do
    
    # model
 #   \cp ${EXECDIR}/${exec} .
-   #cp ${EXECDIR}namelist .
+#   cp ${EXECDIR}namelist .
 #   ln -fs ${EXECDIR}/namelist .
    
    
