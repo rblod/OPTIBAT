@@ -21,7 +21,7 @@ cd ${RUNDIR}
 # echo ${OBSDIR}/shoreface_out_${date2}.nc
  ln -s ${OBSDIR}/shoreface_out_${date2}.nc shoreface_obs.nc
 
-\rm log_obs_${date}.txt
+[ -f log_obs_${date}.txt ] && \rm log_obs_${date}.txt
 touch log_obs_${date}.txt
 
 for obstype in ${OBSTYPES}

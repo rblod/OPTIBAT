@@ -13,7 +13,7 @@ else
 fi
 
 #cd ${WORKDIR} # useless ???
-${SCRIPTDIR}/create_config_ensemble.sh
+#${SCRIPTDIR}/create_config_ensemble.sh
 
 if [ "$1" == 1 ]; then
 #  [ -f ${SCRIPTDIR}/step_EnKF.output ] && \rm ${SCRIPTDIR}/step_EnKF.output

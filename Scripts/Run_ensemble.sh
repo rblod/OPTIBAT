@@ -13,8 +13,12 @@ do
    mem=`echo 00$i | tail -4c`
    [ ! -d ${CASEDIR}${mem} ] && mkdir ${CASEDIR}${mem}
    cd ${CASEDIR}${mem}
-   ln -sf ${EXECDIR}/wkb.exe .
+   \cp ${EXECDIR}/wkb.exe .
+   if [ $date -eq 0 ] ; then
+   ln -sf ${EXECDIR}/namelist_enkf_norst namelist
+   else
    ln -sf ${EXECDIR}/namelist_enkf namelist
+   fi
    ln -sf ${OBSDIR}/bryfile_${date2}.nc shoreface_bry.nc
 #   cp ${EXECDIR}/shoreface_in.nc .
    

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+. $(cd $(dirname "$0")/..; pwd)/set_path.sh
 
 
 nb=$1

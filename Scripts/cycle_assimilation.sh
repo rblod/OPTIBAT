@@ -17,6 +17,5 @@ for k in `seq $dbeg $dend`
 do
    echo $k 
    let kp1=k+1
-#   kp1=0 
     ./step_EnKF.sh $k 1 $kp1
 done

@@ -29,6 +29,7 @@ do
   # cp shoreface_out.nc ARCHIVE/shoreface_forecast${count2}_${date}.nc
   # cp ARCHIVE/shoreface_forecast${count2}_${date}.nc shoreface_out.nc
   
+   cp jobout.txt ARCHIVE/jobout_${date}.txt
    if [ $traj == 0 ]
    then 
      # forecast

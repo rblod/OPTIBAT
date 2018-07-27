@@ -22,7 +22,7 @@ do
 #   cp ${EXECDIR}input_param.txt .
 # change here for rel obs path
 #   cp   ${OBSDIR}/shoreface_out_00.nc shoreface_out.nc
-   \cp   ../../WKB_MODEL/shoreface_out.nc .
+#   \cp   ../../WKB_MODEL/shoreface_out.nc .
    
 #   cp ARCHIVE/shoreface_forecast${mem}_1.nc shoreface_out.nc
    
