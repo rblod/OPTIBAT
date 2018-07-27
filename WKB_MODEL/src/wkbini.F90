@@ -26,6 +26,7 @@ MODULE wkbini
       NAMELIST/namwkb/ ln_rst, nit000, nitend, nstock,                     &
                        jpi, jpj, rdx, rdt, nitermax, eps,                  &
                        cn_dirin, cn_dirout, cn_filein, cn_fileout,         &
+                       cn_rstin,                                           & 
                        ln_perio, ln_anabry,                                &
                        ln_brywest, ln_bryeast, ln_brysouth, ln_brynorth,   &
                        wkb_amp, wkb_prd, wkb_dir,                          &  
@@ -58,6 +59,7 @@ MODULE wkbini
          WRITE(numout,*) '      X-dimension                 jpi          = ', jpi
          WRITE(numout,*) '      Y-dimension                 jpj          = ', jpj
          WRITE(numout,*) '      Restart                     ln_rst       = ', ln_rst
+         WRITE(numout,*) '      Restart file                cn_rstin     = ', cn_rstin
          WRITE(numout,*) '      Frist time steps            nit000       = ', nit000
          WRITE(numout,*) '      Last of time steps          nitend       = ', nitend
          WRITE(numout,*) '      Output frequency            nstock       = ', nstock

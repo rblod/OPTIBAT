@@ -17,7 +17,7 @@ MODULE par_wkb
    REAL(wp) :: eps
 
    CHARACTER(lc) :: cn_dirin, cn_dirout
-   CHARACTER(lc) :: cn_filein, cn_fileout, cn_bryin
+   CHARACTER(lc) :: cn_filein, cn_fileout, cn_bryin, cn_rstin
 
    LOGICAL :: ln_perio
    LOGICAL :: ln_anabry=.TRUE.

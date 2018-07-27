@@ -28,6 +28,7 @@ CONTAINS
       INTEGER :: status, ncid, ji
       CHARACTER(len=lc),DIMENSION(3) :: dimnames
       CHARACTER(lc) :: clname
+      REAL(kind=8), DIMENSION(jpi,jpj,1) :: ztab
   
       clname=TRIM(cn_dirout)//TRIM(cn_fileout)
       
@@ -46,7 +47,9 @@ CONTAINS
       CALL Write_Ncdf_var('xi_rho' , dimnames(1),clname, (/ (ji*rdx , ji=1,jpi)/), 'float')
       CALL Write_Ncdf_var('eta_rho', dimnames(2),clname, (/ (ji*rdx , ji=1,jpj)/), 'float')
       CALL Write_Ncdf_var('time_counter', (/dimnames(3)/),clname, (/real(nbstp)/),time_out,'float')
-      CALL Write_Ncdf_var('h'  , dimnames, clname, h  (:,:)     ,'double')
+      !CALL Write_Ncdf_var('h'  , dimnames, clname, h  (:,:), 'double')
+      ztab(:,:,1) = h(:,:) 
+      CALL Write_Ncdf_var('h'  , dimnames, clname, ztab(:,:,1), time_out     ,'double')
       CALL Write_Ncdf_var('epb', dimnames, clname, wsb(:,:,wnew), time_out, 'double')
       CALL Write_Ncdf_var('wac', dimnames, clname, wac(:,:,wnew), time_out, 'double')
       CALL Write_Ncdf_var('war', dimnames, clname, war(:,:,wnew), time_out, 'double')
@@ -74,6 +77,8 @@ CONTAINS
       clname=TRIM(cn_dirin)//TRIM(cn_filein)
       
       CALL Read_Ncdf_var('h', clname, h(:,:))
+
+      clname=TRIM(cn_dirin)//TRIM(cn_rstin)
       IF ( ln_rst ) THEN
          CALL Read_Ncdf_var('epb', clname, wsb(:,:,wstp))
          CALL Read_Ncdf_var('wac', clname, wac(:,:,wstp))

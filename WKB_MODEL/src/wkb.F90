@@ -32,7 +32,7 @@ PROGRAM wkb
    iwave=1
    thwave=1.D+10  
    wnew=1 
-   IF ( .NOT. ln_rst ) THEN       ! WKB ray steady mode
+!   IF ( .NOT. ln_rst ) THEN       ! WKB ray steady mode
      DO WHILE ( iwave .LE. nitermax .AND. thwave .GE. eps ) 
          wstp=wnew
          wnew=wstp+1
@@ -42,7 +42,7 @@ PROGRAM wkb
          iwave=iwave+1
          thwave=MAX(av_wac,av_wkn)
       END DO 
-  ENDIF
+!  ENDIF
    iwave=2
       !   CALL wkb_wri
    DO nbstp= nit000, nitend         ! WKB ray equation time stepping
