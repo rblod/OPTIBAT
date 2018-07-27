@@ -12,4 +12,4 @@
 #undef ASYNCHR
 #undef SMOOTH
 #undef QMPI
-#undef LOGT
+#define LOGT
