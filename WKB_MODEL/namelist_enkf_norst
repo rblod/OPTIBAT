@@ -2,13 +2,13 @@
 &namwkb       !   parameters of the run
 !-----------------------------------------------------------------------
 !
-ln_rst=.true.             ! start from previous run
+ln_rst=.false.             ! start from previous run
 jpi=61                     ! number of points in x-direction  
 jpj=5                      ! number of points in y-direction                        
 rdx=20.                    ! resolution (m)
 rdt=0.5                    ! time step (s) 
 nitermax = 50000           ! max iter for convergence
-eps = 1.e-12               ! criterion for convergence
+eps = 1.e-14               ! criterion for convergence
 nit000=1                   ! first time step (-)
 nitend=100               ! last  time step (-), here 6 hours duration 
 nstock=100               ! frequency of output in time step
